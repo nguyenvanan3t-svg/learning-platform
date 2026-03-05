@@ -1,69 +1,25 @@
 "use client"
 
 import { useEffect,useState } from "react"
+import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 
 export default function ChildPage(){
 
-const [questions,setQuestions]=useState<any[]>([])
-const [answers,setAnswers]=useState<any>({})
+const [assignments,setAssignments]=useState<any[]>([])
 
 useEffect(()=>{
-
-loadQuestions()
-
+loadAssignments()
 },[])
 
-async function load(){
+async function loadAssignments(){
 
-// lấy assignment mới nhất
-const { data: assignment } = await supabase
+const { data } = await supabase
 .from("assignments")
 .select("*")
 .order("created_at",{ascending:false})
-.limit(1)
-.single()
 
-if(!assignment) return
-
-// lấy questions của assignment đó
-const { data: questions } = await supabase
-.from("questions")
-.select("*")
-.eq("assignment_id",assignment.id)
-.order("id",{ascending:true})
-
-setQuestions(questions || [])
-
-}
-
-function updateAnswer(id:string,value:string){
-
-setAnswers({
-...answers,
-[id]:value
-})
-
-}
-
-async function submit(){
-
-for(const q of questions){
-
-const correct =
-answers[q.id]?.trim() === q.answer.trim()
-
-await supabase.from("submissions").insert({
-
-question_id:q.id,
-answer:answers[q.id],
-correct:correct
-
-})
-
-}
-
-alert("Đã nộp bài")
+setAssignments(data || [])
 
 }
 
@@ -71,43 +27,33 @@ return(
 
 <div className="max-w-3xl mx-auto">
 
-<h1 className="text-3xl font-bold mb-8">
-Bài tập hôm nay
+<h1 className="text-3xl font-bold mb-6">
+Danh sách bài tập
 </h1>
 
-{questions.map((q,i)=>(
+{assignments.map((a,i)=>(
 
-<div
-key={q.id}
-className="border rounded p-5 mb-6"
->
+<Link key={a.id} href={`/child/${a.id}`}>
 
-<p className="font-bold mb-2">
-Câu {i+1}
+<div className="border p-4 mb-4 rounded cursor-pointer hover:bg-gray-100">
+
+<p className="font-bold">
+Bài {i+1} - {a.subject} lớp {a.grade}
 </p>
 
-<p className="mb-4">
-{q.question}
+<p>
+Chủ đề: {a.topic}
 </p>
 
-<input
-className="border p-2 w-full rounded"
-placeholder="Nhập đáp án"
-onChange={(e)=>updateAnswer(q.id,e.target.value)}
-/>
+<p className="text-sm text-gray-500">
+{new Date(a.created_at).toLocaleString()}
+</p>
 
 </div>
 
+</Link>
+
 ))}
-
-<button
-onClick={submit}
-className="bg-green-600 text-white px-6 py-3 rounded"
->
-
-Nộp bài
-
-</button>
 
 </div>
 
