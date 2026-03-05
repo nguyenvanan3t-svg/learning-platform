@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabaseClient"
 export default function ChildPage(){
 
 const [assignments,setAssignments]=useState<any[]>([])
+const [grouped,setGrouped]=useState<any>({})
 
 useEffect(()=>{
 loadAssignments()
@@ -14,44 +15,62 @@ loadAssignments()
 
 async function loadAssignments(){
 
-const { data, error } = await supabase
+const { data } = await supabase
 .from("assignments")
 .select("*")
 .order("created_at",{ascending:false})
 
-if(error){
-console.log(error)
-return
+setAssignments(data || [])
+
+groupBySubject(data || [])
+
 }
 
-setAssignments(data || [])
+function groupBySubject(data:any[]){
+
+const groups:any={}
+
+data.forEach(a=>{
+
+if(!groups[a.subject]){
+groups[a.subject]=[]
+}
+
+groups[a.subject].push(a)
+
+})
+
+setGrouped(groups)
 
 }
 
 return(
 
-<div style={{maxWidth:800,margin:"auto"}}>
+<div style={{maxWidth:900,margin:"auto"}}>
 
 <h1>Danh sách bài tập</h1>
 
-{assignments.map((a,index)=>(
+{Object.keys(grouped).map(subject=>(
 
+<div key={subject} style={{marginBottom:30}}>
+
+<h2 style={{color:"#444"}}>
+📚 {subject}
+</h2>
+
+{grouped[subject].map((a:any)=>(
+  
 <Link key={a.id} href={`/child/${a.id}`}>
 
 <div
 style={{
 border:"1px solid #ccc",
 padding:15,
-marginBottom:10,
-cursor:"pointer"
+marginBottom:10
 }}
 >
 
-<b>Bài {index+1}</b>
-
-<div>Môn: {a.subject}</div>
-
-<div>Chủ đề: {a.topic}</div>
+<b>{a.topic}</b>
 
 <div>
 {new Date(a.created_at).toLocaleString()}
@@ -60,6 +79,10 @@ cursor:"pointer"
 </div>
 
 </Link>
+
+))}
+
+</div>
 
 ))}
 
