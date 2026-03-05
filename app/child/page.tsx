@@ -6,38 +6,24 @@ import { supabase } from "@/lib/supabaseClient"
 
 export default function ChildPage(){
 
-const [assignments,setAssignments]=useState<any[]>([])
 const [grouped,setGrouped]=useState<any>({})
 
 useEffect(()=>{
-loadAssignments()
+load()
 },[])
 
-async function loadAssignments(){
+async function load(){
 
 const { data } = await supabase
 .from("assignments")
 .select("*")
 .order("created_at",{ascending:false})
 
-setAssignments(data || [])
-
-groupBySubject(data || [])
-
-}
-
-function groupBySubject(data:any[]){
-
 const groups:any={}
 
-data.forEach(a=>{
-
-if(!groups[a.subject]){
-groups[a.subject]=[]
-}
-
+data?.forEach(a=>{
+if(!groups[a.subject]) groups[a.subject]=[]
 groups[a.subject].push(a)
-
 })
 
 setGrouped(groups)
@@ -46,35 +32,35 @@ setGrouped(groups)
 
 return(
 
-<div style={{maxWidth:900,margin:"auto"}}>
+<div className="max-w-7xl mx-auto p-6">
 
-<h1>Danh sách bài tập</h1>
+<h1 className="text-3xl font-bold mb-6">
+Danh sách bài tập
+</h1>
+
+<div className="grid grid-cols-3 gap-6">
 
 {Object.keys(grouped).map(subject=>(
 
-<div key={subject} style={{marginBottom:30}}>
+<div key={subject} className="bg-white shadow rounded-lg p-4">
 
-<h2 style={{color:"#444"}}>
+<h2 className="text-xl font-semibold mb-4">
 📚 {subject}
 </h2>
 
 {grouped[subject].map((a:any)=>(
-  
+
 <Link key={a.id} href={`/child/${a.id}`}>
 
-<div
-style={{
-border:"1px solid #ccc",
-padding:15,
-marginBottom:10
-}}
->
+<div className="border rounded-lg p-3 mb-3 hover:bg-gray-50 cursor-pointer">
 
-<b>{a.topic}</b>
+<p className="font-semibold">
+{a.topic}
+</p>
 
-<div>
+<p className="text-sm text-gray-500">
 {new Date(a.created_at).toLocaleString()}
-</div>
+</p>
 
 </div>
 
@@ -85,6 +71,8 @@ marginBottom:10
 </div>
 
 ))}
+
+</div>
 
 </div>
 
