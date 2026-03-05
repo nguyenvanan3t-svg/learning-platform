@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect,useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 
@@ -25,29 +25,30 @@ setAssignments(data || [])
 
 return(
 
-<div className="max-w-3xl mx-auto">
+<div style={{maxWidth:800,margin:"auto"}}>
 
-<h1 className="text-3xl font-bold mb-6">
-Danh sách bài tập
-</h1>
+<h1>Danh sách bài tập</h1>
 
-{assignments.map((a,i)=>(
+{assignments.map((a,index)=>(
 
 <Link key={a.id} href={`/child/${a.id}`}>
 
-<div className="border p-4 mb-4 rounded cursor-pointer hover:bg-gray-100">
+<div style={{
+border:"1px solid #ccc",
+padding:15,
+marginBottom:10,
+cursor:"pointer"
+}}>
 
-<p className="font-bold">
-Bài {i+1} - {a.subject} lớp {a.grade}
-</p>
+<b>Bài {index+1}</b>
 
-<p>
-Chủ đề: {a.topic}
-</p>
+<div>Môn: {a.subject}</div>
 
-<p className="text-sm text-gray-500">
+<div>Chủ đề: {a.topic}</div>
+
+<div>
 {new Date(a.created_at).toLocaleString()}
-</p>
+</div>
 
 </div>
 
