@@ -11,6 +11,11 @@ export async function POST(req: Request){
 try{
 
 const body = await req.json()
+const subject = body.subject
+const grade = body.grade
+const topic = body.topic
+const difficulty = body.difficulty
+const count = body.count
 
 const openai = new OpenAI({
 apiKey:process.env.OPENAI_API_KEY
