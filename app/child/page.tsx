@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect,useState } from "react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 
@@ -14,10 +14,15 @@ loadAssignments()
 
 async function loadAssignments(){
 
-const { data } = await supabase
+const { data, error } = await supabase
 .from("assignments")
 .select("*")
 .order("created_at",{ascending:false})
+
+if(error){
+console.log(error)
+return
+}
 
 setAssignments(data || [])
 
@@ -33,12 +38,14 @@ return(
 
 <Link key={a.id} href={`/child/${a.id}`}>
 
-<div style={{
+<div
+style={{
 border:"1px solid #ccc",
 padding:15,
 marginBottom:10,
 cursor:"pointer"
-}}>
+}}
+>
 
 <b>Bài {index+1}</b>
 

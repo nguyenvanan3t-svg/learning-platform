@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect,useState } from "react"
-import { supabase } from "@/lib/supabaseClient"
 import { useParams } from "next/navigation"
+import { supabase } from "@/lib/supabaseClient"
 
 export default function AssignmentPage(){
 
@@ -11,10 +11,10 @@ const { id } = useParams()
 const [questions,setQuestions]=useState<any[]>([])
 
 useEffect(()=>{
-loadQuestions()
+load()
 },[])
 
-async function loadQuestions(){
+async function load(){
 
 const { data } = await supabase
 .from("questions")
@@ -34,7 +34,14 @@ return(
 
 {questions.map((q,i)=>(
 
-<div key={q.id} style={{border:"1px solid #ccc",marginBottom:10,padding:10}}>
+<div
+key={q.id}
+style={{
+border:"1px solid #ccc",
+marginBottom:10,
+padding:10
+}}
+>
 
 <b>Câu {i+1}</b>
 
