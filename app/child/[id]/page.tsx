@@ -1,31 +1,38 @@
 "use client"
 
-import { useEffect,useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 
-const [explanations,setExplanations] = useState<any>({})
-
 export default function AssignmentPage(){
 
+const params = useParams()
+const id = params?.id as string
 
-const { id } = useParams()
-
-const [questions,setQuestions]=useState<any[]>([])
-const [answers,setAnswers]=useState<any>({})
-const [score,setScore]=useState<number|null>(null)
-
+const [questions,setQuestions] = useState<any[]>([])
+const [answers,setAnswers] = useState<any>({})
+const [score,setScore] = useState<number|null>(null)
+const [explanations,setExplanations] = useState<any>({})
 
 useEffect(()=>{
+if(id){
 load()
-},[])
+}
+},[id])
 
 async function load(){
 
-const { data } = await supabase
+if(!id) return
+
+const { data,error } = await supabase
 .from("questions")
 .select("*")
 .eq("assignment_id",id)
+
+if(error){
+console.error(error)
+return
+}
 
 setQuestions(data || [])
 
@@ -42,8 +49,8 @@ setAnswers({
 
 async function submit(){
 
-let correct=0
-const explains:any={}
+let correct = 0
+const explains:any = {}
 
 for(const q of questions){
 
@@ -73,7 +80,7 @@ explains[q.id] = data.explain
 
 setExplanations(explains)
 
-const finalScore = Math.round(correct/questions.length*10)
+const finalScore = Math.round(correct/questions.length * 10)
 
 setScore(finalScore)
 
@@ -82,6 +89,10 @@ assignment_id:id,
 score:finalScore
 })
 
+}
+
+if(!questions){
+return <div className="p-6">Loading...</div>
 }
 
 return(
