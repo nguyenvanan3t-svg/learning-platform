@@ -59,15 +59,13 @@ const questions = JSON.parse(text.slice(jsonStart,jsonEnd))
 
 // tạo assignment
 
-const { data:assignment } = await supabase
+const { data: assignment } = await supabase
 .from("assignments")
 .insert({
-
-subject:body.subject,
-grade:body.grade,
-topic:body.topic,
-difficulty:body.difficulty
-
+subject,
+grade,
+topic,
+difficulty
 })
 .select()
 .single()
