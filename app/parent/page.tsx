@@ -1,14 +1,33 @@
 "use client"
 
-import { useState } from "react"
+import { useState,useEffect } from "react"
+import { supabase } from "@/lib/supabaseClient"
+import Link from "next/link"
 
 export default function ParentDashboard(){
 
-const [subject,setSubject]=useState("")
+const [subject,setSubject]=useState("Toán")
 const [grade,setGrade]=useState("")
 const [topic,setTopic]=useState("")
-const [difficulty,setDifficulty]=useState("dễ")
+const [difficulty,setDifficulty]=useState("Dễ")
 const [count,setCount]=useState(5)
+
+const [assignments,setAssignments]=useState<any[]>([])
+
+useEffect(()=>{
+loadAssignments()
+},[])
+
+async function loadAssignments(){
+
+const { data } = await supabase
+.from("assignments")
+.select("*")
+.order("created_at",{ascending:false})
+
+setAssignments(data || [])
+
+}
 
 const generate = async ()=>{
 
@@ -24,11 +43,13 @@ count
 })
 })
 
+await loadAssignments()
+
 }
 
 return(
 
-<div>
+<div className="max-w-5xl mx-auto">
 
 <h1 className="text-2xl font-bold mb-6">
 Tạo bài tập
@@ -36,34 +57,53 @@ Tạo bài tập
 
 <div className="grid grid-cols-5 gap-4">
 
-<input
+{/* Môn học */}
+
+<select
 className="border p-2 rounded"
-placeholder="Môn"
+value={subject}
 onChange={(e)=>setSubject(e.target.value)}
-/>
+>
+
+<option value="Toán">Toán</option>
+<option value="Tiếng Anh">Tiếng Anh</option>
+<option value="Tiếng Việt">Tiếng Việt</option>
+
+</select>
+
+{/* Lớp */}
 
 <input
 className="border p-2 rounded"
 placeholder="Lớp"
+value={grade}
 onChange={(e)=>setGrade(e.target.value)}
 />
+
+{/* Chủ đề */}
 
 <input
 className="border p-2 rounded"
 placeholder="Chủ đề"
+value={topic}
 onChange={(e)=>setTopic(e.target.value)}
 />
 
+{/* Độ khó */}
+
 <select
 className="border p-2 rounded"
+value={difficulty}
 onChange={(e)=>setDifficulty(e.target.value)}
 >
 
-<option>dễ</option>
-<option>trung bình</option>
-<option>khó</option>
+<option>Dễ</option>
+<option>Trung bình</option>
+<option>Khó</option>
 
 </select>
+
+{/* Số câu */}
 
 <input
 type="number"
@@ -76,12 +116,51 @@ onChange={(e)=>setCount(Number(e.target.value))}
 
 <button
 onClick={generate}
-className="mt-6 bg-blue-600 text-white px-6 py-2 rounded"
+className="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
 >
 
 Tạo bài tập
 
 </button>
+
+{/* Danh sách bài đã tạo */}
+
+<h2 className="text-xl font-bold mt-10 mb-4">
+Bài đã tạo
+</h2>
+
+<div className="space-y-3">
+
+{assignments.map((a)=>(
+  
+<div key={a.id} className="border p-4 rounded bg-white shadow-sm flex justify-between items-center">
+
+<div>
+
+<p className="font-semibold">
+{a.subject} - {a.topic}
+</p>
+
+<p className="text-sm text-gray-500">
+Lớp {a.grade} • {new Date(a.created_at).toLocaleString()}
+</p>
+
+</div>
+
+<Link
+href={`/parent/${a.id}`}
+className="text-blue-600 hover:underline"
+>
+
+Xem chi tiết
+
+</Link>
+
+</div>
+
+))}
+
+</div>
 
 </div>
 
