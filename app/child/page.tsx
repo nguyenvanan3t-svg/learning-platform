@@ -16,13 +16,21 @@ loadQuestions()
 
 async function loadQuestions(){
 
-const { data } = await supabase
+// lấy assignment mới nhất
+const { data: assignment } = await supabase
+.from("assignments")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(1)
+.single()
+
+// lấy questions thuộc assignment đó
+const { data: questions } = await supabase
 .from("questions")
 .select("*")
-.order("id",{ascending:true})
-.limit(10)
+.eq("assignment_id",assignment.id)
 
-setQuestions(data||[])
+setQuestions(questions || [])
 
 }
 
