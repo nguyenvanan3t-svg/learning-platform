@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
+import { gradeAnswer } from "@/lib/grader"
 
 export default function AssignmentPage(){
 
@@ -35,7 +36,7 @@ const { data: result } = await supabase
 .from("results")
 .select("*")
 .eq("assignment_id",id)
-.single()
+.maybeSingle()
 
 if(result){
 
@@ -67,7 +68,7 @@ for(const q of questions){
 const userAnswer = answers[q.id]?.trim().toLowerCase()
 const correctAnswer = q.answer.trim().toLowerCase()
 
-if(userAnswer === correctAnswer){
+if(gradeAnswer(userAnswer,correctAnswer,q.type)){
 correct++
 }else{
 
@@ -102,10 +103,12 @@ answers:answers
 
 })
 
+setSubmitted(true)
+
 setLoading(false)
 }
 
-if(!questions){
+if(questions.length === 0){
 return <div className="p-6">Loading...</div>
 }
 
@@ -142,6 +145,7 @@ Câu {i+1}
 
 <input
 disabled={submitted}
+value={answers[q.id] || ""}
 className="border w-full p-2 rounded
 focus:ring-2
 focus:ring-pink-400
