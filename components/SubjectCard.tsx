@@ -1,18 +1,29 @@
 "use client"
 
+import Link from "next/link"
+
 export default function SubjectCard({subject,progress}:any){
 
 const colors:any={
-
 "Toán":"bg-blue-100",
 "Tiếng Anh":"bg-green-100",
 "Tiếng Việt":"bg-pink-100"
-
 }
 
 return(
 
-<div className={`${colors[subject]} p-6 rounded-xl shadow`}>
+<Link href={`/child/subject/${subject}`}>
+
+<div className={`${colors[subject]}
+p-6
+rounded-xl
+shadow
+cursor-pointer
+hover:shadow-lg
+hover:scale-105
+active:scale-95
+transition
+`}>
 
 <p className="font-bold text-lg mb-2">
 {subject}
@@ -32,6 +43,8 @@ style={{width:`${progress}%`}}
 </div>
 
 </div>
+
+</Link>
 
 )
 

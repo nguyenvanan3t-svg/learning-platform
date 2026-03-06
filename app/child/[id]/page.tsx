@@ -13,6 +13,7 @@ const [questions,setQuestions] = useState<any[]>([])
 const [answers,setAnswers] = useState<any>({})
 const [score,setScore] = useState<number|null>(null)
 const [explanations,setExplanations] = useState<any>({})
+const [loading,setLoading]=useState(false)
 
 useEffect(()=>{
 if(id){
@@ -49,6 +50,7 @@ setAnswers({
 
 async function submit(){
 
+setLoading(true)
 let correct = 0
 const explains:any = {}
 
@@ -89,6 +91,7 @@ assignment_id:id,
 score:finalScore
 })
 
+setLoading(false)
 }
 
 if(!questions){
@@ -116,7 +119,10 @@ Câu {i+1}
 </p>
 
 <input
-className="border w-full p-2 rounded"
+className="border w-full p-2 rounded
+focus:ring-2
+focus:ring-pink-400
+outline-none"
 placeholder="Nhập đáp án"
 onChange={(e)=>updateAnswer(q.id,e.target.value)}
 />
@@ -143,9 +149,13 @@ onChange={(e)=>updateAnswer(q.id,e.target.value)}
 
 <button
 onClick={submit}
-className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+disabled={loading}
+className="bg-pink-500 hover:bg-pink-600 active:scale-95
+text-white px-6 py-2 rounded-lg transition"
 >
-Nộp bài
+
+{loading ? "Đang chấm bài..." : "Nộp bài"}
+
 </button>
 
 {score!==null && (

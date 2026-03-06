@@ -116,7 +116,7 @@ onChange={(e)=>setCount(Number(e.target.value))}
 
 <button
 onClick={generate}
-className="mt-6 bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg shadow"
+className="bg-pink-500 hover:bg-pink-600 active:scale-95 transition text-white px-6 py-2 rounded-lg"
 >
 
 Tạo bài tập

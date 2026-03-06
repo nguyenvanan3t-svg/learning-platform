@@ -22,7 +22,12 @@ className="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
 
 <Link
 href="/child"
-className="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+className="flex items-center gap-3 p-3 rounded-lg
+hover:bg-pink-50
+active:bg-pink-100
+transition
+cursor-pointer"
+>
 👧 Trang con
 </Link>
 
