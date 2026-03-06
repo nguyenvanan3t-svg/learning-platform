@@ -14,9 +14,14 @@ const [count,setCount]=useState(5)
 
 const [assignments,setAssignments]=useState<any[]>([])
 
+const [loading,setLoading]=useState(false)
+const [error,setError]=useState("")
+
+
 useEffect(()=>{
 loadAssignments()
 },[])
+
 
 async function loadAssignments(){
 
@@ -29,7 +34,21 @@ setAssignments(data || [])
 
 }
 
+
 const generate = async ()=>{
+
+if(!subject || !grade || !topic){
+
+setError("Vui lòng nhập đầy đủ môn học, lớp và chủ đề")
+
+return
+
+}
+
+setError("")
+setLoading(true)
+
+try{
 
 await fetch("/api/generate",{
 method:"POST",
@@ -45,7 +64,16 @@ count
 
 await loadAssignments()
 
+}catch(err){
+
+setError("Có lỗi xảy ra khi tạo bài")
+
 }
+
+setLoading(false)
+
+}
+
 
 return(
 
@@ -55,12 +83,16 @@ return(
 Tạo bài tập
 </h1>
 
+
+{/* FORM TẠO BÀI */}
+
 <div className="grid grid-cols-5 gap-4 bg-white p-6 rounded-xl shadow">
+
 
 {/* Môn học */}
 
 <select
-className="border p-2 rounded"
+className="border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
 value={subject}
 onChange={(e)=>setSubject(e.target.value)}
 >
@@ -71,28 +103,31 @@ onChange={(e)=>setSubject(e.target.value)}
 
 </select>
 
+
 {/* Lớp */}
 
 <input
-className="border p-2 rounded"
+className="border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
 placeholder="Lớp"
 value={grade}
 onChange={(e)=>setGrade(e.target.value)}
 />
 
+
 {/* Chủ đề */}
 
 <input
-className="border p-2 rounded"
+className="border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
 placeholder="Chủ đề"
 value={topic}
 onChange={(e)=>setTopic(e.target.value)}
 />
 
+
 {/* Độ khó */}
 
 <select
-className="border p-2 rounded"
+className="border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
 value={difficulty}
 onChange={(e)=>setDifficulty(e.target.value)}
 >
@@ -103,27 +138,47 @@ onChange={(e)=>setDifficulty(e.target.value)}
 
 </select>
 
+
 {/* Số câu */}
 
 <input
 type="number"
-className="border p-2 rounded"
+min={1}
+max={20}
+className="border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
 value={count}
 onChange={(e)=>setCount(Number(e.target.value))}
 />
 
 </div>
 
+
+{/* HIỂN THỊ LỖI */}
+
+{error && (
+
+<p className="text-red-500 mt-4">
+{error}
+</p>
+
+)}
+
+
+{/* BUTTON */}
+
 <button
 onClick={generate}
-className="bg-pink-500 hover:bg-pink-600 active:scale-95 transition text-white px-6 py-2 rounded-lg"
+disabled={loading}
+className="mt-6 bg-pink-500 hover:bg-pink-600 active:scale-95 transition disabled:bg-gray-300 text-white px-6 py-2 rounded-lg"
 >
 
-Tạo bài tập
+{loading ? "Đang tạo bài..." : "Tạo bài tập"}
 
 </button>
 
-{/* Danh sách bài đã tạo */}
+
+
+{/* DANH SÁCH BÀI ĐÃ TẠO */}
 
 <h2 className="text-xl font-bold mt-10 mb-4">
 Bài đã tạo
@@ -132,8 +187,11 @@ Bài đã tạo
 <div className="space-y-3">
 
 {assignments.map((a)=>(
-  
-<div key={a.id} className="border p-4 rounded bg-white shadow-sm flex justify-between items-center">
+
+<div
+key={a.id}
+className="border p-4 rounded bg-white shadow-sm flex justify-between items-center hover:shadow-md transition"
+>
 
 <div>
 
@@ -146,6 +204,7 @@ Lớp {a.grade} • {new Date(a.created_at).toLocaleString()}
 </p>
 
 </div>
+
 
 <Link
 href={`/parent/${a.id}`}

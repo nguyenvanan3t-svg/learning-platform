@@ -14,6 +14,7 @@ const [answers,setAnswers] = useState<any>({})
 const [score,setScore] = useState<number|null>(null)
 const [explanations,setExplanations] = useState<any>({})
 const [loading,setLoading]=useState(false)
+const [submitted,setSubmitted]=useState(false)
 
 useEffect(()=>{
 if(id){
@@ -23,19 +24,26 @@ load()
 
 async function load(){
 
-if(!id) return
-
-const { data,error } = await supabase
+const { data } = await supabase
 .from("questions")
 .select("*")
 .eq("assignment_id",id)
 
-if(error){
-console.error(error)
-return
-}
-
 setQuestions(data || [])
+
+const { data: result } = await supabase
+.from("results")
+.select("*")
+.eq("assignment_id",id)
+.single()
+
+if(result){
+
+setSubmitted(true)
+setScore(result.score)
+setAnswers(result.answers || {})
+
+}
 
 }
 
@@ -87,8 +95,11 @@ const finalScore = Math.round(correct/questions.length * 10)
 setScore(finalScore)
 
 await supabase.from("results").insert({
+
 assignment_id:id,
-score:finalScore
+score:finalScore,
+answers:answers
+
 })
 
 setLoading(false)
@@ -96,6 +107,17 @@ setLoading(false)
 
 if(!questions){
 return <div className="p-6">Loading...</div>
+}
+
+function getHint(answer:string){
+
+if(!answer) return ""
+
+if(answer.length < 10)
+return "Trả lời ngắn gọn (ví dụ: 36)"
+
+return "Trả lời bằng câu hoàn chỉnh"
+
 }
 
 return(
@@ -119,6 +141,7 @@ Câu {i+1}
 </p>
 
 <input
+disabled={submitted}
 className="border w-full p-2 rounded
 focus:ring-2
 focus:ring-pink-400
@@ -126,6 +149,12 @@ outline-none"
 placeholder="Nhập đáp án"
 onChange={(e)=>updateAnswer(q.id,e.target.value)}
 />
+
+<p className="text-sm text-gray-400 mt-1">
+
+Gợi ý: {getHint(q.answer)}
+
+</p>
 
 {explanations[q.id] && (
 
@@ -147,6 +176,7 @@ onChange={(e)=>updateAnswer(q.id,e.target.value)}
 
 ))}
 
+{!submitted && (
 <button
 onClick={submit}
 disabled={loading}
@@ -157,11 +187,22 @@ text-white px-6 py-2 rounded-lg transition"
 {loading ? "Đang chấm bài..." : "Nộp bài"}
 
 </button>
+)}
 
 {score!==null && (
 
 <div className="mt-6 text-xl font-bold">
 Điểm: {score}/10
+</div>
+
+)}
+
+{submitted && (
+
+<div className="mt-4 text-green-600 font-semibold">
+
+Bạn đã hoàn thành bài này.
+
 </div>
 
 )}

@@ -11,26 +11,41 @@ export async function POST(req: Request){
 try{
 
 const body = await req.json()
+
 const subject = body.subject
 const grade = body.grade
 const topic = body.topic
 const difficulty = body.difficulty
 const count = body.count
 
+
+// kiểm tra dữ liệu đầu vào
+
+if(!subject || !grade || !topic || !count){
+
+return Response.json(
+{ error:"missing fields"},
+{ status:400 }
+)
+
+}
+
+
 const openai = new OpenAI({
 apiKey:process.env.OPENAI_API_KEY
 })
 
+
 const prompt = `
 Bạn là giáo viên tiểu học.
 
-Tạo ${body.count} bài tập môn ${body.subject} lớp ${body.grade}
+Tạo ${count} bài tập môn ${subject} lớp ${grade}
 
-Chủ đề: ${body.topic}
+Chủ đề: ${topic}
 
-Độ khó: ${body.difficulty}
+Độ khó: ${difficulty}
 
-Trả về JSON dạng:
+Chỉ trả về JSON.
 
 [
 {
@@ -41,6 +56,7 @@ Trả về JSON dạng:
 }
 ]
 `
+
 
 const completion = await openai.chat.completions.create({
 
@@ -55,31 +71,51 @@ content:prompt
 
 })
 
+
 const text = completion.choices[0].message.content || ""
+
+
+// tách JSON
 
 const jsonStart = text.indexOf("[")
 const jsonEnd = text.lastIndexOf("]")+1
 
-const questions = JSON.parse(text.slice(jsonStart,jsonEnd))
+if(jsonStart === -1 || jsonEnd === -1){
+
+throw new Error("AI response invalid")
+
+}
+
+const questions = JSON.parse(
+text.slice(jsonStart,jsonEnd)
+)
+
 
 // tạo assignment
 
-const { data: assignment } = await supabase
+const { data: assignment , error:assignmentError } = await supabase
 .from("assignments")
 .insert({
 subject,
 grade,
 topic,
-difficulty
+difficulty,
+question_count:questions.length
 })
 .select()
 .single()
 
-// lưu questions
 
-for(const q of questions){
+if(assignmentError){
 
-await supabase.from("questions").insert({
+throw assignmentError
+
+}
+
+
+// chuẩn bị dữ liệu questions
+
+const questionRows = questions.map((q:any)=>({
 
 assignment_id:assignment.id,
 question:q.question,
@@ -87,11 +123,30 @@ answer:q.answer,
 solution:q.solution,
 type:q.type || "text"
 
-})
+}))
+
+
+// insert 1 lần (nhanh hơn)
+
+const { error:questionError } = await supabase
+.from("questions")
+.insert(questionRows)
+
+
+if(questionError){
+
+throw questionError
 
 }
 
-return Response.json({success:true})
+
+return Response.json({
+
+success:true,
+assignment_id:assignment.id
+
+})
+
 
 }
 
@@ -100,8 +155,8 @@ catch(err){
 console.error(err)
 
 return Response.json(
-{error:"generate failed"},
-{status:500}
+{ error:"generate failed"},
+{ status:500 }
 )
 
 }
