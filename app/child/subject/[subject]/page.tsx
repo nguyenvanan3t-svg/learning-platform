@@ -7,7 +7,8 @@ import Link from "next/link"
 
 export default function SubjectPage(){
 
-const { subject } = useParams()
+const params = useParams()
+const subject = decodeURIComponent(params.subject as string)
 
 const [assignments,setAssignments]=useState<any[]>([])
 
