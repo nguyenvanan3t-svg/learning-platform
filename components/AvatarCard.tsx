@@ -13,7 +13,7 @@ return(
 <div>
 
 <p className="font-bold text-lg">
-Nguyễn Hồ Anh Thư - CHIP
+Nguyễn Hồ Anh Thư - Chip
 </p>
 
 <p className="text-gray-500">
