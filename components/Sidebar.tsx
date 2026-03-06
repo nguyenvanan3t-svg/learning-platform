@@ -14,24 +14,16 @@ AI Learning
 
 <nav className="space-y-2">
 
-<Link href="/child"
+<Link
+href="/parent"
 className="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-🏠 Dashboard
+👨‍🏫 Trang bố
 </Link>
 
-<Link href="/child"
+<Link
+href="/child"
 className="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-📚 Bài tập
-</Link>
-
-<Link href="/results"
-className="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-📊 Kết quả
-</Link>
-
-<Link href="/badges"
-className="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-🏆 Huy hiệu
+👧 Trang con
 </Link>
 
 </nav>
