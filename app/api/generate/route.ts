@@ -44,14 +44,28 @@ Chủ đề: ${topic}
 
 Độ khó: ${difficulty}
 
-Trả về JSON dạng:
+Yêu cầu:
+
+1. Câu hỏi rõ ràng cho học sinh lớp nhỏ
+2. Đáp án chỉ ghi số (không ghi đơn vị)
+3. Giải thích từng bước dễ hiểu
+4. KHÔNG dùng LaTeX hoặc ký hiệu toán học
+
+Ví dụ giải thích đúng:
+
+Bước 1: Hình vuông có 4 cạnh bằng nhau  
+Bước 2: Diện tích = cạnh × cạnh  
+Bước 3: 4 × 4 = 16  
+Bước 4: Diện tích = 16 cm²
+
+Trả về JSON:
 
 [
 {
 "question":"...",
 "answer":"...",
 "solution":"...",
-"type":"text"
+"type":"math"
 }
 ]
 `

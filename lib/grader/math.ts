@@ -2,25 +2,35 @@ export function gradeMath(user:string, correct:string){
 
 if(!user || !correct) return false
 
-// chuẩn hoá
-user = user.toLowerCase()
-correct = correct.toLowerCase()
+function normalize(v:string){
+
+v = v.toLowerCase()
+
+// đổi ký hiệu
+v = v.replace(/²/g,"2")
 
 // bỏ đơn vị
-user = user.replace(/cm2|cm²|cm|m2|m²|m|đ|kg|g/g,"")
-correct = correct.replace(/cm2|cm²|cm|m2|m²|m|đ|kg|g/g,"")
+v = v.replace(/cm2|cm|m2|m|kg|g|đ/g,"")
 
-// lấy số
-const userNum = parseFloat(user)
-const correctNum = parseFloat(correct)
+// bỏ khoảng trắng
+v = v.replace(/\s+/g,"")
 
-if(!isNaN(userNum) && !isNaN(correctNum)){
-
-return Math.abs(userNum - correctNum) < 0.0001
+return v
 
 }
 
+const u = normalize(user)
+const c = normalize(correct)
+
+// nếu là số
+const un = parseFloat(u)
+const cn = parseFloat(c)
+
+if(!isNaN(un) && !isNaN(cn)){
+return Math.abs(un - cn) < 0.0001
+}
+
 // fallback text
-return user.trim() === correct.trim()
+return u === c
 
 }
