@@ -51,11 +51,11 @@ return(
 
 <div className="max-w-5xl mx-auto">
 
-<h1 className="text-2xl font-bold mb-6">
+<h1 className="text-3xl font-bold text-pink-500 mb-8">
 Tạo bài tập
 </h1>
 
-<div className="grid grid-cols-5 gap-4">
+<div className="grid grid-cols-5 gap-4 bg-white p-6 rounded-xl shadow">
 
 {/* Môn học */}
 
@@ -116,7 +116,7 @@ onChange={(e)=>setCount(Number(e.target.value))}
 
 <button
 onClick={generate}
-className="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+className="mt-6 bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg shadow"
 >
 
 Tạo bài tập

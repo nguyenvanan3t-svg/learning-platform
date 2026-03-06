@@ -3,6 +3,7 @@
 import { useEffect,useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
+import AssignmentCard from "@/components/AssignmentCard"
 
 export default function ChildPage(){
 
@@ -27,7 +28,7 @@ return(
 
 <div>
 
-<h1 className="text-3xl font-bold mb-8">
+<h1 className="text-3xl font-bold text-pink-500 mb-8">
 Bài tập của con
 </h1>
 
@@ -37,17 +38,7 @@ Bài tập của con
 
 <Link key={a.id} href={`/child/${a.id}`}>
 
-<div className="bg-white shadow rounded-lg p-6 hover:shadow-lg">
-
-<p className="font-bold text-lg">
-{a.subject}
-</p>
-
-<p className="text-gray-500">
-{a.topic}
-</p>
-
-</div>
+<AssignmentCard assignment={a}/>
 
 </Link>
 
