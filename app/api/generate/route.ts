@@ -20,7 +20,6 @@ const count = body.count
 
 
 // kiểm tra dữ liệu đầu vào
-
 if(!subject || !grade || !topic || !count){
 
 return Response.json(
@@ -45,7 +44,7 @@ Chủ đề: ${topic}
 
 Độ khó: ${difficulty}
 
-Chỉ trả về JSON.
+Trả về JSON dạng:
 
 [
 {
@@ -80,40 +79,26 @@ const text = completion.choices[0].message.content || ""
 const jsonStart = text.indexOf("[")
 const jsonEnd = text.lastIndexOf("]")+1
 
-if(jsonStart === -1 || jsonEnd === -1){
-
-throw new Error("AI response invalid")
-
-}
-
 const questions = JSON.parse(
 text.slice(jsonStart,jsonEnd)
 )
 
 
-// tạo assignment
+// tạo assignment (giữ đúng database hiện tại)
 
-const { data: assignment , error:assignmentError } = await supabase
+const { data: assignment } = await supabase
 .from("assignments")
 .insert({
 subject,
 grade,
 topic,
-difficulty,
-question_count:questions.length
+difficulty
 })
 .select()
 .single()
 
 
-if(assignmentError){
-
-throw assignmentError
-
-}
-
-
-// chuẩn bị dữ liệu questions
+// insert questions (batch cho nhanh)
 
 const questionRows = questions.map((q:any)=>({
 
@@ -125,28 +110,14 @@ type:q.type || "text"
 
 }))
 
-
-// insert 1 lần (nhanh hơn)
-
-const { error:questionError } = await supabase
+await supabase
 .from("questions")
 .insert(questionRows)
 
 
-if(questionError){
-
-throw questionError
-
-}
-
-
 return Response.json({
-
-success:true,
-assignment_id:assignment.id
-
+success:true
 })
-
 
 }
 
@@ -155,8 +126,8 @@ catch(err){
 console.error(err)
 
 return Response.json(
-{ error:"generate failed"},
-{ status:500 }
+{error:"generate failed"},
+{status:500}
 )
 
 }
