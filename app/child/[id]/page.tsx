@@ -16,6 +16,7 @@ const [score,setScore] = useState<number|null>(null)
 const [explanations,setExplanations] = useState<any>({})
 const [loading,setLoading]=useState(false)
 const [submitted,setSubmitted]=useState(false)
+const [checking,setChecking]=useState(true)
 
 useEffect(()=>{
 if(id){
@@ -25,13 +26,15 @@ load()
 
 async function load(){
 
-const { data } = await supabase
+// load questions
+const { data: qdata } = await supabase
 .from("questions")
 .select("*")
 .eq("assignment_id",id)
 
-setQuestions(data || [])
+setQuestions(qdata || [])
 
+// load result nếu đã nộp
 const { data: result } = await supabase
 .from("results")
 .select("*")
@@ -46,9 +49,13 @@ setAnswers(result.answers || {})
 
 }
 
+setChecking(false)
+
 }
 
 function updateAnswer(qid:string,val:string){
+
+if(submitted) return
 
 setAnswers({
 ...answers,
@@ -59,7 +66,10 @@ setAnswers({
 
 async function submit(){
 
+if(submitted) return
+
 setLoading(true)
+
 let correct = 0
 const explains:any = {}
 
@@ -95,6 +105,7 @@ const finalScore = Math.round(correct/questions.length * 10)
 
 setScore(finalScore)
 
+// lưu kết quả
 await supabase.from("results").insert({
 
 assignment_id:id,
@@ -106,9 +117,10 @@ answers:answers
 setSubmitted(true)
 
 setLoading(false)
+
 }
 
-if(questions.length === 0){
+if(checking){
 return <div className="p-6">Loading...</div>
 }
 
@@ -146,21 +158,20 @@ Câu {i+1}
 <input
 disabled={submitted}
 value={answers[q.id] || ""}
-className="border w-full p-2 rounded
+className={`border w-full p-2 rounded
 focus:ring-2
 focus:ring-pink-400
-outline-none"
+outline-none
+${submitted ? "bg-gray-100 cursor-not-allowed" : ""}`}
 placeholder="Nhập đáp án"
 onChange={(e)=>updateAnswer(q.id,e.target.value)}
 />
 
 <p className="text-sm text-gray-400 mt-1">
-
 Gợi ý: {getHint(q.answer)}
-
 </p>
 
-{explanations[q.id] && (
+{submitted && explanations[q.id] && (
 
 <div className="mt-3 bg-yellow-50 border border-yellow-200 p-3 rounded">
 
@@ -181,6 +192,7 @@ Gợi ý: {getHint(q.answer)}
 ))}
 
 {!submitted && (
+
 <button
 onClick={submit}
 disabled={loading}
@@ -191,11 +203,12 @@ text-white px-6 py-2 rounded-lg transition"
 {loading ? "Đang chấm bài..." : "Nộp bài"}
 
 </button>
+
 )}
 
 {score!==null && (
 
-<div className="mt-6 text-xl font-bold">
+<div className="mt-6 text-xl font-bold text-pink-600">
 Điểm: {score}/10
 </div>
 
