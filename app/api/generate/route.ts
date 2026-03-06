@@ -38,25 +38,33 @@ apiKey:process.env.OPENAI_API_KEY
 const prompt = `
 Bạn là giáo viên tiểu học.
 
-Tạo ${count} bài tập môn ${subject} lớp ${grade}
+Tạo ${count} bài tập môn ${subject} lớp ${grade}.
 
 Chủ đề: ${topic}
-
 Độ khó: ${difficulty}
 
-Yêu cầu:
+YÊU CẦU QUAN TRỌNG:
 
-1. Câu hỏi rõ ràng cho học sinh lớp nhỏ
-2. Đáp án chỉ ghi số (không ghi đơn vị)
-3. Giải thích từng bước dễ hiểu
-4. KHÔNG dùng LaTeX hoặc ký hiệu toán học
+1. Giải thích phải cực kỳ đơn giản cho học sinh lớp nhỏ.
+2. KHÔNG dùng LaTeX.
+3. KHÔNG dùng ký hiệu \\, \text, \times, ^, hoặc công thức toán học.
+4. Chỉ dùng văn bản bình thường.
+
+Giải thích phải theo từng bước:
+
+Bước 1:
+Bước 2:
+Bước 3:
+Kết quả:
 
 Ví dụ giải thích đúng:
 
-Bước 1: Hình vuông có 4 cạnh bằng nhau  
-Bước 2: Diện tích = cạnh × cạnh  
-Bước 3: 4 × 4 = 16  
-Bước 4: Diện tích = 16 cm²
+Bước 1: Chu vi hình vuông = cạnh × 4  
+Bước 2: Cạnh = 5 cm  
+Bước 3: 5 × 4 = 20  
+Kết quả: Chu vi = 20 cm
+
+Đáp án chỉ ghi số, KHÔNG ghi đơn vị.
 
 Trả về JSON:
 
@@ -69,7 +77,6 @@ Trả về JSON:
 }
 ]
 `
-
 
 const completion = await openai.chat.completions.create({
 
