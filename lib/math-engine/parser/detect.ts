@@ -1,30 +1,27 @@
-export function detectType(question:string){
+export function detectType(q:string){
 
-const q = question.toLowerCase()
+q = q.toLowerCase()
 
-if(q.includes("hình vuông") && q.includes("chu vi"))
+if(q.includes("chu vi") && q.includes("vuông"))
 return "square_perimeter"
 
-if(q.includes("hình vuông") && q.includes("diện tích"))
+if(q.includes("diện tích") && q.includes("vuông"))
 return "square_area"
 
-if(q.includes("hình chữ nhật") && q.includes("chu vi"))
+if(q.includes("chu vi") && q.includes("chữ nhật"))
 return "rectangle_perimeter"
 
-if(q.includes("hình chữ nhật") && q.includes("diện tích"))
+if(q.includes("diện tích") && q.includes("chữ nhật"))
 return "rectangle_area"
 
 if(q.includes("phân số"))
 return "fraction"
 
-if(q.includes("gấp"))
-return "multiply"
+if(q.includes("tổng") && q.includes("hiệu"))
+return "sumDifference"
 
-if(q.includes("kém"))
-return "minus"
-
-if(q.includes("hơn"))
-return "plus"
+if(q.includes("vận tốc") || q.includes("quãng đường"))
+return "motion"
 
 return "arithmetic"
 
