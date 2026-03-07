@@ -124,20 +124,14 @@ onChange={(e)=>setTopic(e.target.value)}
 />
 
 
-{/* Độ khó */}
+{/* Yêu cầu bài tập */}
 
-<select
-className="border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
+<input
+className="border p-2 rounded"
+placeholder="Ví dụ: Bài toán nâng cao có nhiều lời văn"
 value={difficulty}
 onChange={(e)=>setDifficulty(e.target.value)}
->
-
-<option>Dễ</option>
-<option>Trung bình</option>
-<option>Khó</option>
-
-</select>
-
+/>
 
 {/* Số câu */}
 

@@ -38,35 +38,42 @@ apiKey:process.env.OPENAI_API_KEY
 const prompt = `
 Bạn là giáo viên tiểu học.
 
-Tạo ${count} bài tập môn ${subject} lớp ${grade}.
+Hãy tạo ${count} bài tập môn ${subject} lớp ${grade}.
 
 Chủ đề: ${topic}
-Độ khó: ${difficulty}
+Yêu cầu bài tập: ${body.difficulty}
 
-YÊU CẦU QUAN TRỌNG:
+Yêu cầu:
 
-1. Giải thích phải cực kỳ đơn giản cho học sinh lớp nhỏ.
-2. KHÔNG dùng LaTeX.
-3. KHÔNG dùng ký hiệu \\, \text, \times, ^, hoặc công thức toán học.
-4. Chỉ dùng văn bản bình thường.
+1. Phù hợp học sinh tiểu học
+2. Đáp án chỉ ghi **số hoặc từ**, KHÔNG ghi đơn vị.
+3. Phần solution giải thích từng bước dễ hiểu.
+4. KHÔNG dùng LaTeX.
+5. KHÔNG dùng ký hiệu như \\text, \\times, \\frac.
 
-Giải thích phải theo từng bước:
+Format solution:
 
-Bước 1:
-Bước 2:
-Bước 3:
-Kết quả:
+Bước 1: ...
+Bước 2: ...
+Bước 3: ...
+Kết quả: ...
 
-Ví dụ giải thích đúng:
+Ví dụ:
+
+Question:
+Một hình vuông có cạnh 5 cm. Tính chu vi.
+
+Answer:
+20
+
+Solution:
 
 Bước 1: Chu vi hình vuông = cạnh × 4  
 Bước 2: Cạnh = 5 cm  
 Bước 3: 5 × 4 = 20  
 Kết quả: Chu vi = 20 cm
 
-Đáp án chỉ ghi số, KHÔNG ghi đơn vị.
-
-Trả về JSON:
+Trả về JSON dạng:
 
 [
 {
