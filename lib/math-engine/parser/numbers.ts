@@ -1,8 +1,8 @@
-export function extractNumbers(text: string): number[] {
+export function extractNumbers(text:string){
 
 const matches = text.match(/\d+(\.\d+)?/g)
 
-if (!matches) return []
+if(!matches) return []
 
 return matches.map(Number)
 

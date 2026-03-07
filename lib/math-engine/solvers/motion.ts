@@ -1,13 +1,15 @@
 export function solveMotion(distance:number,time:number){
 
-const speed = distance/time
+const v = distance/time
 
 return `
-Bước 1: Vận tốc = quãng đường / thời gian
+Bước 1:
 
-${distance} / ${time} = ${speed}
+Vận tốc = quãng đường / thời gian
 
-Kết quả: ${speed}
+${distance}/${time} = ${v}
+
+Đáp án: ${v}
 `
 
 }

@@ -1,20 +1,19 @@
 export function solveArithmetic(numbers:number[]){
 
-if(numbers.length < 2)
-return null
+if(numbers.length < 2) return "Không đủ dữ kiện"
 
 const [a,b] = numbers
 
 return `
-Bước 1: Thực hiện phép tính
+Bước 1:
 
 ${a} + ${b}
 
 Bước 2:
 
-${a} + ${b} = ${a+b}
+${a+b}
 
-Kết quả: ${a+b}
+Đáp án: ${a+b}
 `
 
 }

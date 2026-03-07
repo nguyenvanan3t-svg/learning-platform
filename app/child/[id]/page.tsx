@@ -81,7 +81,7 @@ const correctAnswer = q.answer.trim().toLowerCase()
 
 if(q.type === "math"){
 
-explains[q.id] = generateMathSolution(q.question,q.answer)
+explains[q.id] = generateMathSolution(q.question)
 
 }else{
 

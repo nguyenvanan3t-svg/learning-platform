@@ -1,18 +1,16 @@
 export function solveSumDifference(sum:number,diff:number){
 
-const a = (sum + diff)/2
-const b = sum - a
+const big = (sum+diff)/2
+const small = sum-big
 
 return `
-Bước 1:
+Bước 1: Số lớn = (tổng + hiệu)/2
 
-Số lớn = (tổng + hiệu) / 2
-
-(${sum}+${diff})/2 = ${a}
+(${sum}+${diff})/2 = ${big}
 
 Bước 2:
 
-Số bé = ${sum} - ${a} = ${b}
-
+Số bé = ${sum} - ${big} = ${small}
 `
+
 }

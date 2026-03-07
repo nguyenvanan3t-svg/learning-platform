@@ -1,13 +1,13 @@
 export function solveRatio(a:number,b:number){
 
-const result = a*b
+const r = a*b
 
 return `
-Bước 1: Bài toán gấp ${b} lần
+Bước 1:
 
-${a} × ${b} = ${result}
+${a} × ${b} = ${r}
 
-Kết quả: ${result}
+Đáp án: ${r}
 `
 
 }
