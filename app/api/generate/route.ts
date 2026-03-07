@@ -1,61 +1,56 @@
 import OpenAI from "openai"
 import { createClient } from "@supabase/supabase-js"
+import { solveMath } from "@/lib/math-engine"
 
-const supabase = createClient(
+const supabase=createClient(
 process.env.NEXT_PUBLIC_SUPABASE_URL!,
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export async function POST(req: Request){
+export async function POST(req:Request){
 
 try{
 
-const body = await req.json()
+const body=await req.json()
 
-const subject = body.subject
-const grade = body.grade
-const topic = body.topic
-const difficulty = body.difficulty
-const count = body.count
+const {subject,grade,topic,difficulty,count}=body
 
-
-// kiểm tra dữ liệu đầu vào
-if(!subject || !grade || !topic || !count){
+if(!subject||!grade||!topic||!count){
 
 return Response.json(
-{ error:"missing fields"},
-{ status:400 }
+{error:"missing fields"},
+{status:400}
 )
 
 }
 
-
-const openai = new OpenAI({
+const openai=new OpenAI({
 apiKey:process.env.OPENAI_API_KEY
 })
 
-
-const prompt = `
+const prompt=`
 Bạn là giáo viên tiểu học.
 
-Hãy tạo ${count} bài tập môn ${subject} lớp ${grade}.
+Tạo ${count} bài tập môn ${subject} lớp ${grade}
 
 Chủ đề: ${topic}
-Yêu cầu bài tập: ${body.difficulty}
 
-Trả về JSON dạng:
+Yêu cầu:
+${difficulty}
+
+Trả về JSON:
 
 [
 {
 "question":"...",
-"answer":"100,10,10",
-"solution":"...",
 "type":"math"
 }
 ]
+
+Không tạo đáp án.
 `
 
-const completion = await openai.chat.completions.create({
+const completion=await openai.chat.completions.create({
 
 model:"gpt-4o-mini",
 
@@ -68,23 +63,14 @@ content:prompt
 
 })
 
+const text=completion.choices[0].message.content||""
 
-const text = completion.choices[0].message.content || ""
+const jsonStart=text.indexOf("[")
+const jsonEnd=text.lastIndexOf("]")+1
 
+const questions=JSON.parse(text.slice(jsonStart,jsonEnd))
 
-// tách JSON
-
-const jsonStart = text.indexOf("[")
-const jsonEnd = text.lastIndexOf("]")+1
-
-const questions = JSON.parse(
-text.slice(jsonStart,jsonEnd)
-)
-
-
-// tạo assignment (giữ đúng database hiện tại)
-
-const { data: assignment } = await supabase
+const {data:assignment}=await supabase
 .from("assignments")
 .insert({
 subject,
@@ -95,27 +81,25 @@ difficulty
 .select()
 .single()
 
+const rows=questions.map((q:any)=>{
 
-// insert questions (batch cho nhanh)
+const solution = await solveMath(q.question)
 
-const questionRows = questions.map((q:any)=>({
-
+return{
 assignment_id:assignment.id,
 question:q.question,
-answer:q.answer,
-solution:q.solution,
-type:q.type || "text"
+answer:solution.answer,
+solution:solution.steps,
+type:"math"
+}
 
-}))
+})
 
 await supabase
 .from("questions")
-.insert(questionRows)
+.insert(rows)
 
-
-return Response.json({
-success:true
-})
+return Response.json({success:true})
 
 }
 

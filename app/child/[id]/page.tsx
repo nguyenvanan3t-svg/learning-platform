@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 import { gradeAnswer } from "@/lib/grader"
-import { generateMathSolution } from "@/lib/math-engine"
+import { solveMath } from "@/lib/math-engine"
 
 export default function AssignmentPage(){
 
@@ -89,7 +89,15 @@ if(!isCorrect){
 
 if(q.type === "math"){
 
-explains[q.id] = generateMathSolution(q.question)
+const result = await solveMath(q.question)
+
+const correctAnswer = result.answer
+
+if(gradeAnswer(userAnswer, correctAnswer, q.type)){
+correct++
+}else{
+explains[q.id] = result.steps
+}
 
 }else{
 
