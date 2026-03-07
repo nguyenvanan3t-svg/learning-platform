@@ -76,8 +76,16 @@ const explains:any = {}
 
 for(const q of questions){
 
-const userAnswer = answers[q.id]?.trim().toLowerCase()
-const correctAnswer = q.answer.trim().toLowerCase()
+const userAnswer = answers[q.id]?.trim()
+const correctAnswer = q.answer.trim()
+
+/* chấm điểm */
+
+if(gradeAnswer(userAnswer,correctAnswer,q.type)){
+correct++
+}
+
+/* tạo giải thích */
 
 if(q.type === "math"){
 
@@ -108,7 +116,8 @@ const finalScore = Math.round(correct/questions.length * 10)
 
 setScore(finalScore)
 
-// lưu kết quả
+/* lưu kết quả */
+
 await supabase.from("results").insert({
 
 assignment_id:id,
@@ -118,7 +127,6 @@ answers:answers
 })
 
 setSubmitted(true)
-
 setLoading(false)
 
 }
@@ -160,7 +168,7 @@ Câu {i+1}
 
 <input
 disabled={submitted}
-value={answers[q.id] || ""}
+value={answers?.[q.id] || ""}
 className={`border w-full p-2 rounded
 focus:ring-2
 focus:ring-pink-400

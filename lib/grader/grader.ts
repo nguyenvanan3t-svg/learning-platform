@@ -1,13 +1,28 @@
-import { gradeMath } from "./math"
-
 export function gradeAnswer(user:string,correct:string,type?:string){
 
-if(!user) return false
+if(!user || !correct) return false
+
+const normalize = (t:string)=>
+t
+.toLowerCase()
+.replace(/cm2|cm²/g,"")
+.replace(/[^\d.,-]/g,"")
+.replace(",",".")
+.trim()
+
+const u = normalize(user)
+const c = normalize(correct)
 
 if(type === "math"){
-return gradeMath(user,correct)
+
+const nu = parseFloat(u)
+const nc = parseFloat(c)
+
+if(isNaN(nu) || isNaN(nc)) return false
+
+return Math.abs(nu-nc) < 0.0001
 }
 
-return user.trim().toLowerCase() === correct.trim().toLowerCase()
+return u === c
 
 }
