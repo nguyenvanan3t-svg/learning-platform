@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 import { gradeAnswer } from "@/lib/grader"
+import {generateMathSolution} from "@/lib/math-engine"
 
 export default function AssignmentPage(){
 
@@ -78,11 +79,13 @@ for(const q of questions){
 const userAnswer = answers[q.id]?.trim().toLowerCase()
 const correctAnswer = q.answer.trim().toLowerCase()
 
-if(gradeAnswer(userAnswer,correctAnswer,q.type)){
-correct++
+if(q.type === "math"){
+
+explains[q.id] = generateMathSolution(q.question,q.answer)
+
 }else{
 
-const res = await fetch("/api/explain",{
+const res = await fetch("/api/explain-language",{
 method:"POST",
 headers:{ "Content-Type":"application/json"},
 body:JSON.stringify({
