@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 import { gradeAnswer } from "@/lib/grader"
-import {generateMathSolution} from "@/lib/math-engine"
+import { generateMathSolution } from "@/lib/math-engine"
 
 export default function AssignmentPage(){
 
@@ -15,9 +15,9 @@ const [questions,setQuestions] = useState<any[]>([])
 const [answers,setAnswers] = useState<any>({})
 const [score,setScore] = useState<number|null>(null)
 const [explanations,setExplanations] = useState<any>({})
-const [loading,setLoading]=useState(false)
-const [submitted,setSubmitted]=useState(false)
-const [checking,setChecking]=useState(true)
+const [loading,setLoading] = useState(false)
+const [submitted,setSubmitted] = useState(false)
+const [checking,setChecking] = useState(true)
 
 useEffect(()=>{
 if(id){
@@ -27,7 +27,6 @@ load()
 
 async function load(){
 
-// load questions
 const { data: qdata } = await supabase
 .from("questions")
 .select("*")
@@ -35,7 +34,6 @@ const { data: qdata } = await supabase
 
 setQuestions(qdata || [])
 
-// load result nếu đã nộp
 const { data: result } = await supabase
 .from("results")
 .select("*")
@@ -79,13 +77,15 @@ for(const q of questions){
 const userAnswer = answers[q.id]?.trim()
 const correctAnswer = q.answer.trim()
 
-/* chấm điểm */
+const isCorrect = gradeAnswer(userAnswer,correctAnswer,q.type)
 
-if(gradeAnswer(userAnswer,correctAnswer,q.type)){
+if(isCorrect){
 correct++
 }
 
-/* tạo giải thích */
+/* chỉ tạo giải thích khi sai */
+
+if(!isCorrect){
 
 if(q.type === "math"){
 
@@ -110,13 +110,13 @@ explains[q.id] = data.explain
 
 }
 
+}
+
 setExplanations(explains)
 
 const finalScore = Math.round(correct/questions.length * 10)
 
 setScore(finalScore)
-
-/* lưu kết quả */
 
 await supabase.from("results").insert({
 
@@ -154,7 +154,15 @@ return(
 Làm bài
 </h1>
 
-{questions.map((q,i)=>(
+{questions.map((q,i)=>{
+
+const isCorrect = gradeAnswer(
+answers?.[q.id],
+q.answer,
+q.type
+)
+
+return(
 
 <div key={q.id} className="bg-white shadow rounded-lg p-4 mb-4">
 
@@ -169,11 +177,17 @@ Câu {i+1}
 <input
 disabled={submitted}
 value={answers?.[q.id] || ""}
-className={`border w-full p-2 rounded
-focus:ring-2
-focus:ring-pink-400
-outline-none
-${submitted ? "bg-gray-100 cursor-not-allowed" : ""}`}
+className={`border w-full p-2 rounded outline-none
+focus:ring-2 focus:ring-pink-400
+
+${
+submitted
+? isCorrect
+? "border-green-500 bg-green-50"
+: "border-red-500 bg-red-50"
+: ""
+}
+`}
 placeholder="Nhập đáp án"
 onChange={(e)=>updateAnswer(q.id,e.target.value)}
 />
@@ -182,7 +196,7 @@ onChange={(e)=>updateAnswer(q.id,e.target.value)}
 Gợi ý: {getHint(q.answer)}
 </p>
 
-{submitted && explanations[q.id] && (
+{submitted && !isCorrect && explanations[q.id] && (
 
 <div className="mt-3 bg-yellow-50 border border-yellow-200 p-3 rounded">
 
@@ -198,9 +212,19 @@ Gợi ý: {getHint(q.answer)}
 
 )}
 
+{submitted && !isCorrect && (
+
+<p className="text-sm text-red-600 mt-2">
+Đáp án đúng: {q.answer}
+</p>
+
+)}
+
 </div>
 
-))}
+)
+
+})}
 
 {!submitted && (
 
