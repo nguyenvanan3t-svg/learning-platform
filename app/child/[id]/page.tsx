@@ -27,10 +27,14 @@ load()
 
 async function load(){
 
-const { data: qdata } = await supabase
+const { data: qdata, error } = await supabase
 .from("questions")
 .select("*")
 .eq("assignment_id",id)
+
+if(error){
+console.error("load questions error",error)
+}
 
 setQuestions(qdata || [])
 
@@ -74,30 +78,23 @@ const explains:any = {}
 
 for(const q of questions){
 
-const userAnswer = answers[q.id]?.trim()
-const correctAnswer = q.answer.trim()
+const userAnswer = answers[q.id]?.trim() || ""
+const correctAnswer = q.answer?.trim() || ""
 
 const isCorrect = gradeAnswer(userAnswer,correctAnswer,q.type)
 
 if(isCorrect){
 correct++
+continue
 }
 
-/* chỉ tạo giải thích khi sai */
-
-if(!isCorrect){
+/* chỉ giải thích khi sai */
 
 if(q.type === "math"){
 
 const result = await solveMath(q.question)
 
-const correctAnswer = result.answer
-
-if(gradeAnswer(userAnswer, correctAnswer, q.type)){
-correct++
-}else{
 explains[q.id] = result.steps
-}
 
 }else{
 
@@ -113,8 +110,6 @@ answer:q.answer
 const data = await res.json()
 
 explains[q.id] = data.explain
-
-}
 
 }
 
@@ -162,10 +157,12 @@ return(
 Làm bài
 </h1>
 
-{questions.map((q,i)=>{
+{Array.isArray(questions) && questions.map((q,i)=>{
+
+const userValue = answers?.[q.id] || ""
 
 const isCorrect = gradeAnswer(
-answers?.[q.id],
+userValue,
 q.answer,
 q.type
 )
