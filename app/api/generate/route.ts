@@ -43,36 +43,6 @@ Hãy tạo ${count} bài tập môn ${subject} lớp ${grade}.
 Chủ đề: ${topic}
 Yêu cầu bài tập: ${body.difficulty}
 
-Yêu cầu:
-
-1. Phù hợp học sinh tiểu học
-2. Đáp án chỉ ghi **số hoặc từ**, KHÔNG ghi đơn vị.
-3. Phần solution giải thích từng bước dễ hiểu.
-4. KHÔNG dùng LaTeX.
-5. KHÔNG dùng ký hiệu như \\text, \\times, \\frac.
-
-Format solution:
-
-Bước 1: ...
-Bước 2: ...
-Bước 3: ...
-Kết quả: ...
-
-Ví dụ:
-
-Question:
-Một hình vuông có cạnh 5 cm. Tính chu vi.
-
-Answer:
-20
-
-Solution:
-
-Bước 1: Chu vi hình vuông = cạnh × 4  
-Bước 2: Cạnh = 5 cm  
-Bước 3: 5 × 4 = 20  
-Kết quả: Chu vi = 20 cm
-
 Trả về JSON dạng:
 
 [
