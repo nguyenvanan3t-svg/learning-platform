@@ -48,7 +48,7 @@ Trả về JSON dạng:
 [
 {
 "question":"...",
-"answer":"...",
+"answer":"100,10,10",
 "solution":"...",
 "type":"math"
 }
