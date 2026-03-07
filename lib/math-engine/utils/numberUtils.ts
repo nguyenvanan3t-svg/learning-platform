@@ -1,5 +1,9 @@
-export function round(n:number){
+export function extractNumbers(text:string){
 
-return Math.round(n*100)/100
+const m=text.match(/\d+(\.\d+)?/g)
+
+if(!m) return[]
+
+return m.map(Number)
 
 }

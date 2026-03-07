@@ -1,27 +1,37 @@
-export function solveGeometry(q:string,n:number[]){
+import { ParsedQuestion,SolveResult } from "../types"
 
-if(q.includes("hình vuông")){
+export function solveGeometry(parsed:ParsedQuestion):SolveResult{
 
-const a=n[0]
+const q = parsed.question
+const n = parsed.numbers
+
+if(n.length===0)
+return {answer:"",steps:"Không đủ dữ liệu"}
+
+const a = n[0]
+
+if(q.includes("chu vi") && q.includes("hình vuông")){
+
+const p = a * 4
 
 return{
-answer:String(a*a),
-steps:`Diện tích = ${a} × ${a}`
+answer:p.toString(),
+steps:`Chu vi = cạnh × 4 = ${a} × 4 = ${p}`
 }
 
 }
 
-if(q.includes("hình chữ nhật")){
+if(q.includes("diện tích") && q.includes("hình vuông")){
 
-const area=n[0]*n[1]
+const s = a * a
 
 return{
-answer:String(area),
-steps:`Diện tích = ${n[0]} × ${n[1]}`
+answer:s.toString(),
+steps:`Diện tích = cạnh × cạnh = ${a} × ${a} = ${s}`
 }
 
 }
 
-return null
+return {answer:"",steps:"Không nhận diện hình"}
 
 }

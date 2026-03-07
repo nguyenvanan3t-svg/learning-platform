@@ -1,17 +1,21 @@
-export function solveEquation(a:number,b:number,c:number){
+import { ParsedQuestion, SolveResult } from "../types"
 
-const x = (c - b) / a
+export function solveEquation(parsed:ParsedQuestion):SolveResult{
 
-return{
-answer:String(x),
-steps:`
-${a}x + ${b} = ${c}
+const nums = parsed.numbers
 
-${a}x = ${c}-${b}
-${a}x = ${c-b}
+if(nums.length < 2){
+return {answer:"",steps:"Không đủ dữ liệu"}
+}
 
-x = ${x}
-`
+const a = nums[0]
+const b = nums[1]
+
+const x = b / a
+
+return {
+answer:x.toString(),
+steps:`x = ${b} / ${a}`
 }
 
 }

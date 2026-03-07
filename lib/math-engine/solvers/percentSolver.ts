@@ -1,16 +1,15 @@
-export function solvePercent(numbers:number[]){
+export function solvePercent(parsed:any){
 
-const total=numbers[0]
-const percent=numbers[1]
+const nums = parsed.numbers
 
-const value=total*percent/100
+const value = nums[0]
+const percent = nums[1]
+
+const result = value * percent / 100
 
 return{
-
-answer:String(value),
-
-steps:`${percent}% của ${total} = ${value}`
-
+answer:result.toString(),
+steps:`${percent}% của ${value} = ${result}`
 }
 
 }

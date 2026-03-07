@@ -1,33 +1,17 @@
-export function solveWork(numbers:number[]){
+export function solveWork(parsed:any){
 
-// dạng: A làm x giờ, B làm y giờ
+const nums = parsed.numbers
 
-if(numbers.length < 2) return null
+const a = nums[0]
+const b = nums[1]
 
-const t1 = numbers[0]
-const t2 = numbers[1]
+const rate = 1/a + 1/b
 
-// năng suất
-
-const r1 = 1/t1
-const r2 = 1/t2
-
-const r = r1 + r2
-
-const totalTime = 1/r
+const time = 1/rate
 
 return{
-
-answer:String(totalTime),
-
-steps:
-`Năng suất A = 1/${t1}
-Năng suất B = 1/${t2}
-
-Năng suất chung = ${r1}+${r2} = ${r}
-
-Thời gian hoàn thành = 1/${r} = ${totalTime}`
-
+answer:time.toString(),
+steps:`1/t = 1/${a} + 1/${b}`
 }
 
 }

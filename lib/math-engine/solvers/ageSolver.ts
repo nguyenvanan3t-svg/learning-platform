@@ -1,27 +1,13 @@
-export function solveAge(numbers:number[]){
+export function solveAge(parsed:any){
 
-// tổng tuổi
+const nums = parsed.numbers
 
-if(numbers.length === 2){
-
-const sum = numbers[0]
-const diff = numbers[1]
-
-const older = (sum + diff) / 2
-const younger = sum - older
+const a = nums[0]
+const b = nums[1]
 
 return{
-
-answer:`${older},${younger}`,
-
-steps:
-`Tuổi lớn = (${sum}+${diff})/2 = ${older}
-Tuổi nhỏ = ${sum}-${older} = ${younger}`
-
+answer:(a+b).toString(),
+steps:`Tổng tuổi = ${a} + ${b}`
 }
-
-}
-
-return null
 
 }

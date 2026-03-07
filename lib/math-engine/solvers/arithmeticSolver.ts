@@ -1,13 +1,37 @@
-export function solveArithmetic(numbers:number[]){
+import { ParsedQuestion, SolveResult } from "../types"
 
-if(numbers.length<2) return null
+export function solveArithmetic(parsed:ParsedQuestion):SolveResult{
 
-const a=numbers[0]
-const b=numbers[1]
+const nums = parsed.numbers
 
-return{
-answer:String(a*b),
-steps:`${a} × ${b} = ${a*b}`
+if(nums.length < 2){
+return {answer:"",steps:"Không đủ dữ liệu"}
 }
+
+const a = nums[0]
+const b = nums[1]
+const q = parsed.question
+
+if(q.includes("cộng")){
+const r = a + b
+return {answer:r.toString(),steps:`${a} + ${b} = ${r}`}
+}
+
+if(q.includes("trừ")){
+const r = a - b
+return {answer:r.toString(),steps:`${a} - ${b} = ${r}`}
+}
+
+if(q.includes("nhân")){
+const r = a * b
+return {answer:r.toString(),steps:`${a} × ${b} = ${r}`}
+}
+
+if(q.includes("chia")){
+const r = a / b
+return {answer:r.toString(),steps:`${a} ÷ ${b} = ${r}`}
+}
+
+return {answer:"",steps:"Không xác định phép toán"}
 
 }

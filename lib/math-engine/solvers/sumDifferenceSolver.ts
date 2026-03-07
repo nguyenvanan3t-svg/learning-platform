@@ -1,19 +1,20 @@
-export function solveSumDifference(numbers:number[]){
+export function solveSumDifference(parsed:any){
 
-const sum=numbers[0]
-const diff=numbers[1]
+const nums = parsed.numbers
 
-const big=(sum+diff)/2
-const small=sum-big
+if(nums.length<2){
+return{answer:"",steps:"Thiếu dữ liệu"}
+}
+
+const sum = nums[0]
+const diff = nums[1]
+
+const a = (sum + diff)/2
+const b = sum - a
 
 return{
-
-answer:`${big},${small}`,
-
-steps:
-`Số lớn = (${sum}+${diff})/2 = ${big}
-Số bé = ${sum}-${big}`
-
+answer:`${a},${b}`,
+steps:`a=(S+H)/2 = (${sum}+${diff})/2 = ${a}`
 }
 
 }

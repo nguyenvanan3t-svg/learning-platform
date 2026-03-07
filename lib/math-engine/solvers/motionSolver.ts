@@ -1,16 +1,19 @@
-export function solveMotion(numbers:number[]){
+export function solveMotion(parsed:any){
 
-const speed=numbers[0]
-const time=numbers[1]
+const nums = parsed.numbers
 
-const distance=speed*time
+if(nums.length<2){
+return{answer:"",steps:"Thiếu dữ liệu"}
+}
+
+const v = nums[0]
+const t = nums[1]
+
+const s = v * t
 
 return{
-
-answer:String(distance),
-
-steps:`${speed} × ${time} = ${distance}`
-
+answer:s.toString(),
+steps:`Quãng đường = vận tốc × thời gian = ${v} × ${t} = ${s}`
 }
 
 }
