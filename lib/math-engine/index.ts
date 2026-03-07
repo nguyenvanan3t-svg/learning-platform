@@ -15,6 +15,13 @@ if(result){
 return result
 }
 
-return await aiFallback(question)
+if (typeof window === "undefined") {
+  return await aiFallback(question)
+}
+
+return {
+  answer: "",
+  steps: "Không giải được bài toán"
+}
 
 }
