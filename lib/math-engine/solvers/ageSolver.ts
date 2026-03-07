@@ -1,13 +1,16 @@
-export function solveAge(parsed:any){
+import { ParsedQuestion } from "../types"
+
+export function solveAge(parsed: ParsedQuestion){
 
 const nums = parsed.numbers
 
-const a = nums[0]
-const b = nums[1]
+if(nums.length < 2) return null
+
+const result = nums[0] - nums[1]
 
 return{
-answer:(a+b).toString(),
-steps:`Tổng tuổi = ${a} + ${b}`
+answer: result.toString(),
+steps:`${nums[0]} - ${nums[1]} = ${result}`
 }
 
 }

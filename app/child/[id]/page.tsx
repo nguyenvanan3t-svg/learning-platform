@@ -94,7 +94,9 @@ if(q.type === "math"){
 
 const result = await solveMath(q.question)
 
-explains[q.id] = result.steps
+if(!result) continue
+
+const correctAnswer = result.answer
 
 }else{
 

@@ -1,19 +1,16 @@
-export function solveMotion(parsed:any){
+import { ParsedQuestion } from "../types"
+
+export function solveMotion(parsed: ParsedQuestion){
 
 const nums = parsed.numbers
 
-if(nums.length<2){
-return{answer:"",steps:"Thiếu dữ liệu"}
-}
+if(nums.length < 2) return null
 
-const v = nums[0]
-const t = nums[1]
-
-const s = v * t
+const distance = nums[0] * nums[1]
 
 return{
-answer:s.toString(),
-steps:`Quãng đường = vận tốc × thời gian = ${v} × ${t} = ${s}`
+answer: distance.toString(),
+steps:`${nums[0]} × ${nums[1]} = ${distance}`
 }
 
 }

@@ -1,37 +1,96 @@
-import { ParsedQuestion,SolveResult } from "../types"
+import { ParsedQuestion } from "../types"
 
-export function solveGeometry(parsed:ParsedQuestion):SolveResult{
+export function solveGeometry(parsed: ParsedQuestion){
 
-const q = parsed.question
-const n = parsed.numbers
+const q = parsed.question.toLowerCase()
+const nums = parsed.numbers
 
-if(n.length===0)
-return {answer:"",steps:"Không đủ dữ liệu"}
+/* ----------------------------
+HÌNH CHỮ NHẬT
+-----------------------------*/
 
-const a = n[0]
+if(q.includes("hình chữ nhật")){
 
-if(q.includes("chu vi") && q.includes("hình vuông")){
+const length = nums[0]
+const width = nums[1]
+
+const area1 = length * width
+
+/* có thay đổi kích thước */
+
+if(q.includes("giảm") || q.includes("tăng")){
+
+let newLength = length
+let newWidth = width
+
+let index = 2
+
+if(q.includes("giảm chiều dài")){
+
+const decrease = nums[index]
+newLength = length - decrease
+index++
+
+}
+
+if(q.includes("tăng chiều rộng")){
+
+const increase = nums[index]
+newWidth = width + increase
+
+}
+
+const area2 = newLength * newWidth
+
+return{
+answer:`${area1}, ${area2}`,
+steps:
+`Diện tích ban đầu = ${length} × ${width} = ${area1}
+Chiều dài mới = ${length} - ${nums[2]} = ${newLength}
+Chiều rộng mới = ${width} + ${nums[3]} = ${newWidth}
+Diện tích mới = ${newLength} × ${newWidth} = ${area2}`
+}
+
+}
+
+return{
+answer: area1.toString(),
+steps:`${length} × ${width} = ${area1}`
+}
+
+}
+
+/* ----------------------------
+HÌNH VUÔNG
+-----------------------------*/
+
+if(q.includes("hình vuông")){
+
+const a = nums[0]
+
+if(q.includes("chu vi")){
 
 const p = a * 4
 
 return{
 answer:p.toString(),
-steps:`Chu vi = cạnh × 4 = ${a} × 4 = ${p}`
+steps:`Chu vi = ${a} × 4 = ${p}`
 }
 
 }
 
-if(q.includes("diện tích") && q.includes("hình vuông")){
+if(q.includes("diện tích")){
 
 const s = a * a
 
 return{
 answer:s.toString(),
-steps:`Diện tích = cạnh × cạnh = ${a} × ${a} = ${s}`
+steps:`Diện tích = ${a} × ${a} = ${s}`
 }
 
 }
 
-return {answer:"",steps:"Không nhận diện hình"}
+}
 
+return null
 }

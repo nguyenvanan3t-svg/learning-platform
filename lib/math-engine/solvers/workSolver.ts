@@ -1,17 +1,16 @@
-export function solveWork(parsed:any){
+import { ParsedQuestion } from "../types"
+
+export function solveWork(parsed: ParsedQuestion){
 
 const nums = parsed.numbers
 
-const a = nums[0]
-const b = nums[1]
+if(nums.length < 2) return null
 
-const rate = 1/a + 1/b
-
-const time = 1/rate
+const result = 1 / (1/nums[0] + 1/nums[1])
 
 return{
-answer:time.toString(),
-steps:`1/t = 1/${a} + 1/${b}`
+answer: result.toString(),
+steps:`1/(1/${nums[0]} + 1/${nums[1]})`
 }
 
 }

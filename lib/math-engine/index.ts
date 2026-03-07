@@ -9,46 +9,45 @@ import { semanticReasoning } from "./reasoning/semanticReasoningEngine"
 
 export async function solveMath(question:string){
 
-const parsed=parseQuestion(question)
+const parsed = parseQuestion(question)
 
 /* unit conversion */
 
-const unit=convertUnits(question)
-
+const unit = convertUnits(question)
 if(unit) return unit
 
 /* symbolic equation */
 
-const eq=solveEquationSymbolic(question)
-
+const eq = solveEquationSymbolic(question)
 if(eq) return eq
 
-/* word problem */
+/* geometry (ưu tiên cao) */
 
-parseWordProblem(parsed)
-
-/* geometry */
-
-if(parsed.type==="geometry")
-return solveGeometry(parsed)
+const geometry = solveGeometry(parsed)
+if(geometry) return geometry
 
 /* arithmetic */
 
-if(parsed.type==="arithmetic")
-return solveArithmetic(parsed)
+const arithmetic = solveArithmetic(parsed)
+if(arithmetic) return arithmetic
+
+/* word problem parse */
+
+const wp = parseWordProblem(parsed)
 
 /* multi step */
 
-const multi=multiStepSolve(parsed)
+const multi = multiStepSolve(parsed)
+if(multi) return multi
 
-if(multi)
-return multi
+/* semantic reasoning */
+
 const reasoning = semanticReasoning(parsed)
+if(reasoning) return reasoning
 
-if(reasoning)
-return reasoning
+/* fallback */
 
-return{
+return {
 answer:"",
 steps:"Không giải được"
 }

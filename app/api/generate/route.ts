@@ -86,6 +86,16 @@ questions.map(async (q:any)=>{
 
 const solution = await solveMath(q.question)
 
+if(!solution){
+return{
+assignment_id:assignment.id,
+question:q.question,
+answer:"",
+solution:"Không giải được",
+type:"math"
+}
+}
+
 return{
 assignment_id:assignment.id,
 question:q.question,

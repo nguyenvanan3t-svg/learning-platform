@@ -1,19 +1,16 @@
-export function solveFraction(numbers:number[]){
+import { ParsedQuestion } from "../types"
 
-if(numbers.length<3) return null
+export function solveFraction(parsed: ParsedQuestion){
 
-const total=numbers[0]
-const num=numbers[1]
-const den=numbers[2]
+const nums = parsed.numbers
 
-const value=total*num/den
+if(nums.length < 2) return null
+
+const result = nums[0] / nums[1]
 
 return{
-
-answer:String(value),
-
-steps:`${num}/${den} của ${total} = ${value}`
-
+answer: result.toString(),
+steps: `${nums[0]} / ${nums[1]} = ${result}`
 }
 
 }
