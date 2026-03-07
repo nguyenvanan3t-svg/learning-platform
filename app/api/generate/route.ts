@@ -81,7 +81,8 @@ difficulty
 .select()
 .single()
 
-const rows=questions.map((q:any)=>{
+const rows = await Promise.all(
+questions.map(async (q:any)=>{
 
 const solution = await solveMath(q.question)
 
@@ -94,6 +95,7 @@ type:"math"
 }
 
 })
+)
 
 await supabase
 .from("questions")
