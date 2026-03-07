@@ -3,13 +3,13 @@ export type MathType =
   | "square_area"
   | "rectangle_perimeter"
   | "rectangle_area"
-  | "fraction"
   | "sumDifference"
   | "ratio"
   | "motion"
+  | "unit"
   | "arithmetic"
 
-export function detectType(q: string): MathType {
+export function detectType(q:string):MathType{
 
 q = q.toLowerCase()
 
@@ -25,9 +25,6 @@ return "rectangle_perimeter"
 if(q.includes("diện tích") && q.includes("chữ nhật"))
 return "rectangle_area"
 
-if(q.includes("phân số"))
-return "fraction"
-
 if(q.includes("tổng") && q.includes("hiệu"))
 return "sumDifference"
 
@@ -36,6 +33,9 @@ return "ratio"
 
 if(q.includes("vận tốc") || q.includes("quãng đường"))
 return "motion"
+
+if(q.includes("đổi"))
+return "unit"
 
 return "arithmetic"
 

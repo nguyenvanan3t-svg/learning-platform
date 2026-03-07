@@ -7,9 +7,8 @@ Bước 1:
 
 Vận tốc = quãng đường / thời gian
 
-${distance}/${time} = ${v}
+${distance} / ${time} = ${v}
 
 Đáp án: ${v}
 `
-
 }

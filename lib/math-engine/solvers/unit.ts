@@ -1,5 +1,10 @@
-export function convert(value:number,from:number,to:number){
+export function convertCmToM(cm:number){
 
-return value * from / to
+const r = cm/100
 
+return `
+Bước 1:
+
+${cm} cm = ${r} m
+`
 }

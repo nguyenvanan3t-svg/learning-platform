@@ -1,6 +1,7 @@
 import { extractNumbers } from "./parser/numbers"
 import { detectType } from "./parser/detect"
 
+import { solveArithmetic } from "./solvers/arithmetic"
 import {
 solveSquareArea,
 solveSquarePerimeter,
@@ -8,12 +9,11 @@ solveRectangleArea,
 solveRectanglePerimeter
 } from "./solvers/geometry"
 
-import { solveSumDifference } from "./solvers/sumDifference"
 import { solveRatio } from "./solvers/ratio"
+import { solveSumDifference } from "./solvers/sumDifference"
 import { solveMotion } from "./solvers/motion"
-import { solveArithmetic } from "./solvers/arithmetic"
 
-export function generateMathSolution(question: string){
+export function generateMathSolution(question:string){
 
 const numbers = extractNumbers(question)
 const type = detectType(question)
@@ -42,7 +42,7 @@ case "motion":
 return solveMotion(numbers[0],numbers[1])
 
 default:
-return solveArithmetic(numbers)
+return solveArithmetic(numbers,question)
 
 }
 
