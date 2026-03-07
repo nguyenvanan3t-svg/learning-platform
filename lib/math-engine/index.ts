@@ -18,27 +18,32 @@ export function generateMathSolution(question: string){
 const numbers = extractNumbers(question)
 const type = detectType(question)
 
-if(type === "square_perimeter")
+switch(type){
+
+case "square_perimeter":
 return solveSquarePerimeter(numbers[0])
 
-if(type === "square_area")
+case "square_area":
 return solveSquareArea(numbers[0])
 
-if(type === "rectangle_perimeter")
+case "rectangle_perimeter":
 return solveRectanglePerimeter(numbers[0],numbers[1])
 
-if(type === "rectangle_area")
+case "rectangle_area":
 return solveRectangleArea(numbers[0],numbers[1])
 
-if(type === "sum_difference")
+case "sumDifference":
 return solveSumDifference(numbers[0],numbers[1])
 
-if(type === "ratio")
+case "ratio":
 return solveRatio(numbers[0],numbers[1])
 
-if(type === "motion")
+case "motion":
 return solveMotion(numbers[0],numbers[1])
 
+default:
 return solveArithmetic(numbers)
+
+}
 
 }

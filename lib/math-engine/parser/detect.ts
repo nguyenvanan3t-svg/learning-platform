@@ -1,4 +1,15 @@
-export function detectType(q:string){
+export type MathType =
+  | "square_perimeter"
+  | "square_area"
+  | "rectangle_perimeter"
+  | "rectangle_area"
+  | "fraction"
+  | "sumDifference"
+  | "ratio"
+  | "motion"
+  | "arithmetic"
+
+export function detectType(q: string): MathType {
 
 q = q.toLowerCase()
 
@@ -19,6 +30,9 @@ return "fraction"
 
 if(q.includes("tổng") && q.includes("hiệu"))
 return "sumDifference"
+
+if(q.includes("gấp"))
+return "ratio"
 
 if(q.includes("vận tốc") || q.includes("quãng đường"))
 return "motion"
