@@ -1,20 +1,53 @@
-import { ParsedQuestion } from "../types"
+import { ParsedQuestion } from "../types/ParsedQuestion"
+import { SolveResult } from "../types/SolveResult"
 
-export function solveRatio(parsed: ParsedQuestion){
+export function ratioSolver(parsed: ParsedQuestion): SolveResult {
 
-const nums = parsed.numbers
+  const text = parsed.normalized
 
-if(nums.length < 3) return null
+  const ratioMatch = text.match(/(\d+)\s*:\s*(\d+)/)
 
-const total = nums[0]
-const r1 = nums[1]
-const r2 = nums[2]
+  if (!ratioMatch) {
 
-const part = total / (r1 + r2)
+    return {
+      answer: "Không tìm thấy tỉ lệ",
+      steps: []
+    }
 
-return{
-answer:`${part*r1}, ${part*r2}`,
-steps:`${total}/(${r1}+${r2}) = ${part}`
-}
+  }
+
+  const r1 = Number(ratioMatch[1])
+  const r2 = Number(ratioMatch[2])
+
+  const totalMatch = text.match(/tổng\s*(\d+)/)
+
+  if (!totalMatch) {
+
+    return {
+      answer: "Không tìm thấy tổng",
+      steps: []
+    }
+
+  }
+
+  const total = Number(totalMatch[1])
+
+  const sum = r1 + r2
+
+  const a = total * r1 / sum
+  const b = total * r2 / sum
+
+  return {
+
+    answer: `${a} và ${b}`,
+
+    steps: [
+      `tỉ lệ = ${r1}:${r2}`,
+      `tổng tỉ = ${sum}`,
+      `số 1 = ${a}`,
+      `số 2 = ${b}`
+    ]
+
+  }
 
 }

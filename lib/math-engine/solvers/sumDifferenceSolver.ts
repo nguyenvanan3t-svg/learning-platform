@@ -1,20 +1,34 @@
-export function solveSumDifference(parsed:any){
+import { ParsedQuestion } from "../types/ParsedQuestion"
+import { SolveResult } from "../types/SolveResult"
 
-const nums = parsed.numbers
+export function sumDifferenceSolver(parsed: ParsedQuestion): SolveResult {
 
-if(nums.length<2){
-return{answer:"",steps:"Thiếu dữ liệu"}
-}
+  const nums = parsed.numbers
 
-const sum = nums[0]
-const diff = nums[1]
+  if (nums.length < 2) {
 
-const a = (sum + diff)/2
-const b = sum - a
+    return {
+      answer: "Không đủ dữ liệu",
+      steps: []
+    }
 
-return{
-answer:`${a},${b}`,
-steps:`a=(S+H)/2 = (${sum}+${diff})/2 = ${a}`
-}
+  }
+
+  const sum = nums[0]
+  const diff = nums[1]
+
+  const a = (sum + diff) / 2
+  const b = sum - a
+
+  return {
+
+    answer: `${a} và ${b}`,
+
+    steps: [
+      `Số lớn = (tổng + hiệu)/2 = (${sum} + ${diff})/2 = ${a}`,
+      `Số bé = ${sum} - ${a} = ${b}`
+    ]
+
+  }
 
 }

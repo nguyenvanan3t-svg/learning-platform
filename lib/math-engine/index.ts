@@ -1,55 +1,64 @@
-import { parseQuestion } from "./parser/semanticParser"
-import { parseWordProblem } from "./parser/wordProblemParser"
-import { multiStepSolve } from "./reasoning/multiStepSolver"
-import { solveEquationSymbolic } from "./symbolic/symbolicEquationSolver"
-import { convertUnits } from "./units/unitConversion"
-import { solveArithmetic } from "./solvers/arithmeticSolver"
-import { solveGeometry } from "./solvers/geometrySolver"
-import { semanticReasoning } from "./reasoning/semanticReasoningEngine"
+import { normalizeText } from "./core/normalizeText"
+import { extractNumbers } from "./core/numberExtractor"
+import { extractKeywords } from "./core/keywordExtractor"
+import { detectProblemType } from "./core/problemDetector"
 
-export async function solveMath(question:string){
+import { ParsedQuestion } from "./types/ParsedQuestion"
+import { SolveResult } from "./types/SolveResult"
 
-const parsed = parseQuestion(question)
+import { arithmeticSolver } from "./solvers/arithmeticSolver"
+import { geometrySolver } from "./solvers/geometrySolver"
+import { fractionSolver } from "./solvers/fractionSolver"
+import { percentSolver } from "./solvers/percentSolver"
+import { ratioSolver } from "./solvers/ratioSolver"
+import { sumDifferenceSolver } from "./solvers/sumDifferenceSolver"
+import { motionSolver } from "./solvers/motionSolver"
+import { workSolver } from "./solvers/workSolver"
+import { ageSolver } from "./solvers/ageSolver"
 
-/* unit conversion */
+export function solveMath(question: string): SolveResult {
 
-const unit = convertUnits(question)
-if(unit) return unit
+  const normalized = normalizeText(question)
 
-/* symbolic equation */
+  const numbers = extractNumbers(normalized)
 
-const eq = solveEquationSymbolic(question)
-if(eq) return eq
+  const keywords = extractKeywords(normalized)
 
-/* geometry (ưu tiên cao) */
+  const parsed: ParsedQuestion = {
 
-const geometry = solveGeometry(parsed)
-if(geometry) return geometry
+    raw: question,
 
-/* arithmetic */
+    normalized,
 
-const arithmetic = solveArithmetic(parsed)
-if(arithmetic) return arithmetic
+    numbers,
 
-/* word problem parse */
+    keywords,
 
-const wp = parseWordProblem(parsed)
+    units: []
 
-/* multi step */
+  }
 
-const multi = multiStepSolve(parsed)
-if(multi) return multi
+  const type = detectProblemType(parsed)
 
-/* semantic reasoning */
+  parsed.detectedType = type
 
-const reasoning = semanticReasoning(parsed)
-if(reasoning) return reasoning
+  switch (type) {
 
-/* fallback */
+    case "geometry":
+      return geometrySolver(parsed)
 
-return {
-answer:"",
-steps:"Không giải được"
-}
+    case "arithmetic":
+      return arithmeticSolver(parsed)
+
+    default:
+      return {
+
+        answer: "Không nhận dạng được bài toán",
+
+        steps: []
+
+      }
+
+  }
 
 }

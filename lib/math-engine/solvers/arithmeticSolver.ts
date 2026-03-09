@@ -1,37 +1,18 @@
-import { ParsedQuestion, SolveResult } from "../types"
+import { ParsedQuestion } from "../types/ParsedQuestion"
+import { SolveResult } from "../types/SolveResult"
 
-export function solveArithmetic(parsed:ParsedQuestion):SolveResult{
+export function arithmeticSolver(parsed: ParsedQuestion): SolveResult {
 
-const nums = parsed.numbers
+  const expression = parsed.normalized
 
-if(nums.length < 2){
-return {answer:"",steps:"Không đủ dữ liệu"}
-}
+  const result = eval(expression)
 
-const a = nums[0]
-const b = nums[1]
-const q = parsed.question
+  return {
 
-if(q.includes("cộng")){
-const r = a + b
-return {answer:r.toString(),steps:`${a} + ${b} = ${r}`}
-}
+    answer: result,
 
-if(q.includes("trừ")){
-const r = a - b
-return {answer:r.toString(),steps:`${a} - ${b} = ${r}`}
-}
+    steps: [expression + " = " + result]
 
-if(q.includes("nhân")){
-const r = a * b
-return {answer:r.toString(),steps:`${a} × ${b} = ${r}`}
-}
-
-if(q.includes("chia")){
-const r = a / b
-return {answer:r.toString(),steps:`${a} ÷ ${b} = ${r}`}
-}
-
-return {answer:"",steps:"Không xác định phép toán"}
+  }
 
 }

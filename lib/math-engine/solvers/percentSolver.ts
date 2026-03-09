@@ -1,15 +1,34 @@
-export function solvePercent(parsed:any){
+import { ParsedQuestion } from "../types/ParsedQuestion"
+import { SolveResult } from "../types/SolveResult"
 
-const nums = parsed.numbers
+export function percentSolver(parsed: ParsedQuestion): SolveResult {
 
-const value = nums[0]
-const percent = nums[1]
+  const nums = parsed.numbers
 
-const result = value * percent / 100
+  if (nums.length < 2) {
 
-return{
-answer:result.toString(),
-steps:`${percent}% của ${value} = ${result}`
-}
+    return {
+      answer: "Không đủ dữ liệu",
+      steps: []
+    }
+
+  }
+
+  const percent = nums[0]
+  const value = nums[1]
+
+  const result = value * percent / 100
+
+  return {
+
+    answer: result,
+
+    steps: [
+      `${percent}% của ${value}`,
+      `= ${value} × ${percent} / 100`,
+      `= ${result}`
+    ]
+
+  }
 
 }

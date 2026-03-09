@@ -1,16 +1,52 @@
-import { ParsedQuestion } from "../types"
+import { ParsedQuestion } from "../types/ParsedQuestion"
+import { SolveResult } from "../types/SolveResult"
 
-export function solveMotion(parsed: ParsedQuestion){
+export function motionSolver(parsed: ParsedQuestion): SolveResult {
 
-const nums = parsed.numbers
+  const text = parsed.normalized
 
-if(nums.length < 2) return null
+  const nums = parsed.numbers
 
-const distance = nums[0] * nums[1]
+  if (text.includes("vận tốc") && text.includes("quãng đường")) {
 
-return{
-answer: distance.toString(),
-steps:`${nums[0]} × ${nums[1]} = ${distance}`
-}
+    const v = nums[0]
+    const s = nums[1]
+
+    const t = s / v
+
+    return {
+
+      answer: t,
+
+      steps: [`t = s / v = ${s} / ${v} = ${t}`]
+
+    }
+
+  }
+
+  if (text.includes("thời gian") && text.includes("vận tốc")) {
+
+    const t = nums[0]
+    const v = nums[1]
+
+    const s = v * t
+
+    return {
+
+      answer: s,
+
+      steps: [`s = v × t = ${v} × ${t} = ${s}`]
+
+    }
+
+  }
+
+  return {
+
+    answer: "Không xác định được bài chuyển động",
+
+    steps: []
+
+  }
 
 }

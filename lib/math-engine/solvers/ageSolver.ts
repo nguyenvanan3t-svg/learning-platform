@@ -1,16 +1,38 @@
-import { ParsedQuestion } from "../types"
+import { ParsedQuestion } from "../types/ParsedQuestion"
+import { SolveResult } from "../types/SolveResult"
 
-export function solveAge(parsed: ParsedQuestion){
+export function ageSolver(parsed: ParsedQuestion): SolveResult {
 
-const nums = parsed.numbers
+  const text = parsed.normalized
+  const nums = parsed.numbers
 
-if(nums.length < 2) return null
+  if (text.includes("tổng") && text.includes("hiệu")) {
 
-const result = nums[0] - nums[1]
+    const sum = nums[0]
+    const diff = nums[1]
 
-return{
-answer: result.toString(),
-steps:`${nums[0]} - ${nums[1]} = ${result}`
-}
+    const a = (sum + diff) / 2
+    const b = sum - a
+
+    return {
+
+      answer: `${a} và ${b}`,
+
+      steps: [
+        `a = (${sum}+${diff})/2`,
+        `b = ${sum}-${a}`
+      ]
+
+    }
+
+  }
+
+  return {
+
+    answer: "Không giải được bài tuổi",
+
+    steps: []
+
+  }
 
 }

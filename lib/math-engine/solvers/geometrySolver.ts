@@ -1,96 +1,73 @@
-import { ParsedQuestion } from "../types"
+import { ParsedQuestion } from "../types/ParsedQuestion"
+import { SolveResult } from "../types/SolveResult"
 
-export function solveGeometry(parsed: ParsedQuestion){
+export function geometrySolver(parsed: ParsedQuestion): SolveResult {
 
-const q = parsed.question.toLowerCase()
-const nums = parsed.numbers
+  const text = parsed.normalized
+  const nums = parsed.numbers
 
-/* ----------------------------
-HÌNH CHỮ NHẬT
------------------------------*/
+  if (text.includes("chu vi") && text.includes("hình chữ nhật")) {
 
-if(q.includes("hình chữ nhật")){
+    if (text.includes("gấp đôi")) {
 
-const length = nums[0]
-const width = nums[1]
+      const p = nums[0]
 
-const area1 = length * width
+      const width = p / 6
+      const length = width * 2
 
-/* có thay đổi kích thước */
+      return {
 
-if(q.includes("giảm") || q.includes("tăng")){
+        answer: `dài ${length}, rộng ${width}`,
 
-let newLength = length
-let newWidth = width
+        steps: [
+          "Giả sử rộng = x",
+          "dài = 2x",
+          "chu vi = 2(2x + x) = 6x",
+          `6x = ${p}`,
+          `x = ${width}`
+        ]
 
-let index = 2
+      }
 
-if(q.includes("giảm chiều dài")){
+    }
 
-const decrease = nums[index]
-newLength = length - decrease
-index++
+    if (nums.length >= 2) {
 
-}
+      const l = nums[0]
+      const w = nums[1]
 
-if(q.includes("tăng chiều rộng")){
+      if (text.includes("chu vi")) {
 
-const increase = nums[index]
-newWidth = width + increase
+        const result = 2 * (l + w)
 
-}
+        return {
+          answer: result,
+          steps: [`P = 2(${l}+${w}) = ${result}`]
+        }
 
-const area2 = newLength * newWidth
+      }
 
-return{
-answer:`${area1}, ${area2}`,
-steps:
-`Diện tích ban đầu = ${length} × ${width} = ${area1}
-Chiều dài mới = ${length} - ${nums[2]} = ${newLength}
-Chiều rộng mới = ${width} + ${nums[3]} = ${newWidth}
-Diện tích mới = ${newLength} × ${newWidth} = ${area2}`
-}
+      if (text.includes("diện tích")) {
 
-}
+        const s = l * w
 
-return{
-answer: area1.toString(),
-steps:`${length} × ${width} = ${area1}`
-}
+        return {
+          answer: s,
+          steps: [`S = ${l} × ${w} = ${s}`]
+        }
 
-}
+      }
 
-/* ----------------------------
-HÌNH VUÔNG
------------------------------*/
+    }
 
-if(q.includes("hình vuông")){
+  }
 
-const a = nums[0]
+  return {
 
-if(q.includes("chu vi")){
+    answer: "Không giải được bài hình học",
 
-const p = a * 4
+    steps: []
 
-return{
-answer:p.toString(),
-steps:`Chu vi = ${a} × 4 = ${p}`
-}
+  }
 
-}
-
-if(q.includes("diện tích")){
-
-const s = a * a
-
-return{
-answer:s.toString(),
-steps:`Diện tích = ${a} × ${a} = ${s}`
-}
-
-}
-
-}
-
-return null
 }

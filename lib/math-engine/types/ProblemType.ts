@@ -1,0 +1,11 @@
+export type ProblemType =
+  | "geometry"
+  | "fraction"
+  | "percent"
+  | "ratio"
+  | "sumDifference"
+  | "motion"
+  | "work"
+  | "age"
+  | "arithmetic"
+  | "unknown"

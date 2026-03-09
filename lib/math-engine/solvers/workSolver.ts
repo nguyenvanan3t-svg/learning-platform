@@ -1,16 +1,35 @@
-import { ParsedQuestion } from "../types"
+import { ParsedQuestion } from "../types/ParsedQuestion"
+import { SolveResult } from "../types/SolveResult"
 
-export function solveWork(parsed: ParsedQuestion){
+export function workSolver(parsed: ParsedQuestion): SolveResult {
 
-const nums = parsed.numbers
+  const nums = parsed.numbers
 
-if(nums.length < 2) return null
+  if (nums.length < 2) {
 
-const result = 1 / (1/nums[0] + 1/nums[1])
+    return {
+      answer: "Không đủ dữ liệu",
+      steps: []
+    }
 
-return{
-answer: result.toString(),
-steps:`1/(1/${nums[0]} + 1/${nums[1]})`
-}
+  }
+
+  let sum = 0
+
+  for (const n of nums) {
+
+    sum += 1 / n
+
+  }
+
+  const result = 1 / sum
+
+  return {
+
+    answer: result,
+
+    steps: [`t = 1 / (${nums.map(n => `1/${n}`).join("+")})`]
+
+  }
 
 }
