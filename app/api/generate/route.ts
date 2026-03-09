@@ -68,7 +68,19 @@ const text=completion.choices[0].message.content||""
 const jsonStart=text.indexOf("[")
 const jsonEnd=text.lastIndexOf("]")+1
 
-const questions=JSON.parse(text.slice(jsonStart,jsonEnd))
+let questions = []
+
+try{
+
+questions = JSON.parse(text.slice(jsonStart,jsonEnd))
+
+}catch(e){
+
+console.error("JSON PARSE ERROR", text)
+
+throw e
+
+}
 
 const {data:assignment}=await supabase
 .from("assignments")
@@ -84,7 +96,17 @@ difficulty
 const rows = await Promise.all(
 questions.map(async (q:any)=>{
 
-const solution = await solveMath(q.question)
+let solution = null
+
+try{
+
+solution = solveMath(q.question)
+
+}catch(err){
+
+console.error("ENGINE ERROR:", q.question, err)
+
+}
 
 if(!solution){
 return{
@@ -99,8 +121,10 @@ type:"math"
 return{
 assignment_id:assignment.id,
 question:q.question,
-answer:solution.answer,
-solution:solution.steps,
+answer:String(solution.answer ?? ""),
+solution:Array.isArray(solution.steps)
+? solution.steps.join("\n")
+: String(solution.steps ?? ""),
 type:"math"
 }
 
