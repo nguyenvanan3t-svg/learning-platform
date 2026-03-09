@@ -6,9 +6,18 @@ return String(t)
 .replace(/÷/g,"/")
 .replace(/:/g,"/")
 .replace(/,/g,".")
-.replace(/cm²|cm2/g,"")
 .replace(/\s+/g," ")
 .trim()
+
+}
+
+function evalExpr(expr:string){
+
+try{
+return Function(`"use strict";return (${expr})`)()
+}catch{
+return null
+}
 
 }
 
@@ -54,37 +63,23 @@ return null
 
 }
 
-function evalExpr(expr:string){
-
-try{
-
-return Function(`"use strict";return (${expr})`)()
-
-}catch{
-
-return null
-
-}
-
-}
-
 function parseNumber(raw:string){
 
 const t=normalize(raw)
-
-// percent
-const p=parsePercent(t)
-if(p!==null) return p
 
 // fraction
 const f=parseFraction(t)
 if(f!==null) return f
 
+// percent
+const p=parsePercent(t)
+if(p!==null) return p
+
 // unit
 const u=parseUnit(t)
 if(u!==null) return u
 
-// plain number
+// number
 const n=parseFloat(t)
 if(!isNaN(n)) return n
 
@@ -96,11 +91,9 @@ return null
 
 }
 
-function parseSet(text:string){
+function parseList(raw:string){
 
-const t=normalize(text)
-
-const parts=t
+const parts=normalize(raw)
 .split(/và|,|;|\(|\)| /)
 .filter(Boolean)
 
@@ -149,17 +142,7 @@ return false
 
 if(type==="math"){
 
-// multiple answers
-const us=parseSet(user)
-const cs=parseSet(String(correct))
-
-if(us && cs){
-
-return compareSets(us,cs)
-
-}
-
-// single number
+// parse number first
 const nu=parseNumber(user)
 const nc=parseNumber(String(correct))
 
@@ -169,11 +152,21 @@ return compareNumbers(nu,nc)
 
 }
 
+// parse set
+const us=parseList(user)
+const cs=parseList(String(correct))
+
+if(us && cs){
+
+return compareSets(us,cs)
+
+}
+
 return false
 
 }
 
-// text fallback
+// text compare
 return normalize(user)===normalize(correct)
 
 }

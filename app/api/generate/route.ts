@@ -63,26 +63,51 @@ content:prompt
 
 })
 
-const text=completion.choices[0].message.content||""
+const text=completion.choices?.[0]?.message?.content || ""
 
 const jsonStart=text.indexOf("[")
 const jsonEnd=text.lastIndexOf("]")+1
 
-let questions = []
+if(jsonStart===-1 || jsonEnd===0){
 
-try{
+console.error("INVALID AI JSON",text)
 
-questions = JSON.parse(text.slice(jsonStart,jsonEnd))
-
-}catch(e){
-
-console.error("JSON PARSE ERROR", text)
-
-throw e
+return Response.json(
+{error:"AI format error"},
+{status:500}
+)
 
 }
 
-const {data:assignment}=await supabase
+let questions:any[]=[]
+
+try{
+
+questions=JSON.parse(text.slice(jsonStart,jsonEnd))
+
+}catch(e){
+
+console.error("JSON PARSE ERROR",text)
+
+return Response.json(
+{error:"AI JSON parse error"},
+{status:500}
+)
+
+}
+
+if(!Array.isArray(questions)){
+
+return Response.json(
+{error:"AI response invalid"},
+{status:500}
+)
+
+}
+
+questions=questions.slice(0,count)
+
+const {data:assignment,error:assignmentError}=await supabase
 .from("assignments")
 .insert({
 subject,
@@ -93,34 +118,50 @@ difficulty
 .select()
 .single()
 
-const rows = await Promise.all(
-questions.map(async (q:any)=>{
+if(assignmentError || !assignment){
 
-let solution = null
+console.error("ASSIGNMENT INSERT ERROR",assignmentError)
+
+return Response.json(
+{error:"database error"},
+{status:500}
+)
+
+}
+
+const rows=await Promise.all(
+
+questions.map(async(q:any)=>{
+
+const question=String(q.question||"").trim()
+
+let solution=null
 
 try{
 
-solution = solveMath(q.question)
+solution=solveMath(question)
 
 }catch(err){
 
-console.error("ENGINE ERROR:", q.question, err)
+console.error("ENGINE ERROR:",question,err)
 
 }
 
 if(!solution){
+
 return{
 assignment_id:assignment.id,
-question:q.question,
+question,
 answer:"",
 solution:"Không giải được",
 type:"math"
 }
+
 }
 
 return{
 assignment_id:assignment.id,
-question:q.question,
+question,
 answer:String(solution.answer ?? ""),
 solution:Array.isArray(solution.steps)
 ? solution.steps.join("\n")
@@ -129,11 +170,23 @@ type:"math"
 }
 
 })
+
 )
 
-await supabase
+const {error:insertError}=await supabase
 .from("questions")
 .insert(rows)
+
+if(insertError){
+
+console.error("QUESTION INSERT ERROR",insertError)
+
+return Response.json(
+{error:"database insert error"},
+{status:500}
+)
+
+}
 
 return Response.json({success:true})
 
@@ -141,7 +194,7 @@ return Response.json({success:true})
 
 catch(err){
 
-console.error(err)
+console.error("GENERATE ERROR",err)
 
 return Response.json(
 {error:"generate failed"},
