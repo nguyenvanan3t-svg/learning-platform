@@ -1,7 +1,13 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
 
-export function workDetector(parsed: ParsedQuestion): boolean {
+export function workDetector(parsed:ParsedQuestion){
 
-  return parsed.normalized.includes("cùng làm")
+const text=parsed.normalized
+
+if(text.includes("cùng làm")) return true
+
+if(text.includes("bao lâu xong")) return true
+
+return false
 
 }

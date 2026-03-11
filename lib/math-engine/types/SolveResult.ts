@@ -1,7 +1,4 @@
-export interface SolveResult {
-
-  answer: number | string
-
-  steps: string[]
-
+export interface SolveResult{
+answer:number|string
+steps:string[]
 }

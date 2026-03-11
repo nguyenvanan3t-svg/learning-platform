@@ -1,8 +1,12 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
 
-export function sumDifferenceDetector(parsed: ParsedQuestion): boolean {
+export function sumDifferenceDetector(parsed:ParsedQuestion){
 
-  return parsed.normalized.includes("tổng") &&
-         parsed.normalized.includes("hiệu")
+const text=parsed.normalized
+
+if(text.includes("tổng") && text.includes("hiệu"))
+return true
+
+return false
 
 }

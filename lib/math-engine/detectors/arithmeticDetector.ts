@@ -1,10 +1,15 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
 
-export function arithmeticDetector(parsed: ParsedQuestion): boolean {
+export function arithmeticDetector(parsed:ParsedQuestion){
 
-  return parsed.normalized.includes("+") ||
-         parsed.normalized.includes("-") ||
-         parsed.normalized.includes("*") ||
-         parsed.normalized.includes("/")
+const text=parsed.normalized
+
+if(/[+\-*/()]/.test(text))
+return true
+
+if(parsed.numbers.length>=2)
+return true
+
+return false
 
 }

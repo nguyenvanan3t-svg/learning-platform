@@ -1,11 +1,17 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
 
-export function geometryDetector(parsed: ParsedQuestion): boolean {
+export function geometryDetector(parsed:ParsedQuestion){
 
-  const words = parsed.keywords
+const text=parsed.normalized
 
-  return words.includes("hình") ||
-         words.includes("chu") ||
-         words.includes("diện")
+if(text.includes("chu vi")) return true
+
+if(text.includes("diện tích")) return true
+
+if(text.includes("hình chữ nhật")) return true
+
+if(text.includes("hình vuông")) return true
+
+return false
 
 }

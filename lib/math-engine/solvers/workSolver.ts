@@ -1,35 +1,21 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
 import { SolveResult } from "../types/SolveResult"
 
-export function workSolver(parsed: ParsedQuestion): SolveResult {
+export function workSolver(parsed:ParsedQuestion):SolveResult{
 
-  const nums = parsed.numbers
+const [a,b]=parsed.numbers
 
-  if (nums.length < 2) {
+const raw = 1/(1/a+1/b)
 
-    return {
-      answer: "Không đủ dữ liệu",
-      steps: []
-    }
+// chuẩn hóa floating
+const t = Math.round(raw * 1e15) / 1e15
 
-  }
-
-  let sum = 0
-
-  for (const n of nums) {
-
-    sum += 1 / n
-
-  }
-
-  const result = 1 / sum
-
-  return {
-
-    answer: result,
-
-    steps: [`t = 1 / (${nums.map(n => `1/${n}`).join("+")})`]
-
-  }
+return{
+answer:t,
+steps:[
+`1/t = 1/${a} + 1/${b}`,
+`t = ${t}`
+]
+}
 
 }

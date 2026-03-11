@@ -1,74 +1,45 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
 import { SolveResult } from "../types/SolveResult"
-import { gcd } from "../utils/mathUtils"
 
-function simplify(num: number, den: number) {
+function evalFraction(expr:string){
 
-  const g = gcd(num, den)
+const normalized = expr.replace(/(\d+\/\d+)/g,"($1)")
 
-  return {
-    num: num / g,
-    den: den / g
-  }
+try{
+
+return Function(`return ${normalized}`)()
+
+}catch{
+
+return null
 
 }
 
-export function fractionSolver(parsed: ParsedQuestion): SolveResult {
+}
 
-  const text = parsed.normalized
+export function fractionSolver(parsed:ParsedQuestion):SolveResult{
 
-  const match = text.match(/(\d+)\/(\d+)\s*([\+\-\*\/])\s*(\d+)\/(\d+)/)
+const expr = parsed.normalized
 
-  if (!match) {
-    return {
-      answer: "Không giải được phân số",
-      steps: []
-    }
-  }
+const result = evalFraction(expr)
 
-  const a = Number(match[1])
-  const b = Number(match[2])
-  const op = match[3]
-  const c = Number(match[4])
-  const d = Number(match[5])
+if(result===null){
 
-  let num = 0
-  let den = 1
+return{
+answer:"",
+steps:["Không giải được phân số"]
+}
 
-  if (op === "+") {
+}
 
-    num = a * d + b * c
-    den = b * d
+const value = Math.round(result * 1000000) / 1000000
 
-  } else if (op === "-") {
-
-    num = a * d - b * c
-    den = b * d
-
-  } else if (op === "*") {
-
-    num = a * c
-    den = b * d
-
-  } else if (op === "/") {
-
-    num = a * d
-    den = b * c
-
-  }
-
-  const s = simplify(num, den)
-
-  return {
-
-    answer: `${s.num}/${s.den}`,
-
-    steps: [
-      `${a}/${b} ${op} ${c}/${d}`,
-      `= ${num}/${den}`,
-      `= ${s.num}/${s.den}`
-    ]
-
-  }
+return{
+answer:value,
+steps:[
+`Tính phân số`,
+`${expr} = ${result}`
+]
+}
 
 }

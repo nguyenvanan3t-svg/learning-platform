@@ -1,7 +1,7 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
 
-export function percentDetector(parsed: ParsedQuestion): boolean {
+export function percentDetector(parsed:ParsedQuestion){
 
-  return parsed.normalized.includes("%")
+return parsed.normalized.includes("%")
 
 }

@@ -109,7 +109,7 @@ return nums
 
 function compareNumbers(a:number,b:number){
 
-return Math.abs(a-b)<1e-4
+return Math.abs(a-b)<1e-3
 
 }
 

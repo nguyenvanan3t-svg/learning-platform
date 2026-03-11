@@ -1,52 +1,39 @@
-import { ParsedQuestion } from "../types/ParsedQuestion"
-import { SolveResult } from "../types/SolveResult"
+export function motionSolver(parsed:any){
 
-export function motionSolver(parsed: ParsedQuestion): SolveResult {
+const text=parsed.normalized
+const nums=parsed.numbers
 
-  const text = parsed.normalized
+/* time = distance / speed */
 
-  const nums = parsed.numbers
+if(text.includes("vận tốc")){
 
-  if (text.includes("vận tốc") && text.includes("quãng đường")) {
+const s=nums[0]
+const v=nums[1]
 
-    const v = nums[0]
-    const s = nums[1]
+return{
+answer:s/v,
+steps:[`${s}/${v}=${s/v}`]
+}
 
-    const t = s / v
+}
 
-    return {
+/* distance = speed × time */
 
-      answer: t,
+if(text.includes("mỗi giờ")){
 
-      steps: [`t = s / v = ${s} / ${v} = ${t}`]
+const t=nums[0]
+const v=nums[1]
 
-    }
+return{
+answer:t*v,
+steps:[`${t}×${v}=${t*v}`]
+}
 
-  }
+}
 
-  if (text.includes("thời gian") && text.includes("vận tốc")) {
-
-    const t = nums[0]
-    const v = nums[1]
-
-    const s = v * t
-
-    return {
-
-      answer: s,
-
-      steps: [`s = v × t = ${v} × ${t} = ${s}`]
-
-    }
-
-  }
-
-  return {
-
-    answer: "Không xác định được bài chuyển động",
-
-    steps: []
-
-  }
+return{
+answer:"",
+steps:["Không nhận dạng"]
+}
 
 }

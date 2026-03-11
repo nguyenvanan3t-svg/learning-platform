@@ -1,7 +1,6 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
-import { ProblemType } from "../types/ProblemType"
 
-import { geometryDetector } from "../detectors/geometryDetector"
+import { arithmeticDetector } from "../detectors/arithmeticDetector"
 import { fractionDetector } from "../detectors/fractionDetector"
 import { percentDetector } from "../detectors/percentDetector"
 import { ratioDetector } from "../detectors/ratioDetector"
@@ -9,28 +8,38 @@ import { sumDifferenceDetector } from "../detectors/sumDifferenceDetector"
 import { motionDetector } from "../detectors/motionDetector"
 import { workDetector } from "../detectors/workDetector"
 import { ageDetector } from "../detectors/ageDetector"
-import { arithmeticDetector } from "../detectors/arithmeticDetector"
+import { geometryDetector } from "../detectors/geometryDetector"
 
-export function detectProblemType(parsed: ParsedQuestion): ProblemType {
+export function detectProblemType(parsed:ParsedQuestion){
 
-  if (geometryDetector(parsed)) return "geometry"
+const text = parsed.normalized
 
-  if (fractionDetector(parsed)) return "fraction"
+// bắt ratio trước tiên
+if(/\d+\s*:\s*\d+/.test(text)) return "ratio"
 
-  if (percentDetector(parsed)) return "percent"
+if(ratioDetector(parsed)) return "ratio"
 
-  if (ratioDetector(parsed)) return "ratio"
+// Ưu tiên: nếu có dạng a:b thì chắc chắn là bài tỉ lệ
+if(/\d+\s*:\s*\d+/.test(text)){
+  return "ratio"
+}
 
-  if (sumDifferenceDetector(parsed)) return "sumDifference"
+if(fractionDetector(parsed)) return "fraction"
 
-  if (motionDetector(parsed)) return "motion"
+if(percentDetector(parsed)) return "percent"
 
-  if (workDetector(parsed)) return "work"
+if(sumDifferenceDetector(parsed)) return "sumDifference"
 
-  if (ageDetector(parsed)) return "age"
+if(motionDetector(parsed)) return "motion"
 
-  if (arithmeticDetector(parsed)) return "arithmetic"
+if(workDetector(parsed)) return "work"
 
-  return "unknown"
+if(ageDetector(parsed)) return "age"
+
+if(geometryDetector(parsed)) return "geometry"
+
+if(arithmeticDetector(parsed)) return "arithmetic"
+
+return "arithmetic"
 
 }

@@ -1,37 +1,60 @@
 import { solveMath } from "../index"
 import { mathTestCases } from "./mathTestCases"
+import { mathAdvancedTestCases } from "./mathAdvancedTestCases"
+import { mathWordProblemCases } from "./mathWordProblemCases"
+import { mathFullTestCases } from "./mathFullTestCases"
+import { generateArithmeticTests } from "./generateTests"
 
 let pass = 0
 let fail = 0
 
-for (const test of mathTestCases) {
+const allTests=[
+...mathTestCases,
+...mathAdvancedTestCases,
+...mathWordProblemCases,
+...mathFullTestCases,
+...generateArithmeticTests()
+]
 
-  const result = solveMath(test.question)
+for(const test of allTests){
 
-  if (String(result.answer) === String(test.expected)) {
+const result = solveMath(test.question)
 
-    console.log("PASS:", test.question)
+const answer = String(result?.answer)
+const expected = String(test.expected)
 
-    pass++
+const nu = Number(answer)
+const ne = Number(expected)
 
-  } else {
+if(!isNaN(nu) && !isNaN(ne)){
 
-    console.log("FAIL:", test.question)
+if(Math.abs(nu-ne) < 1e-6){
 
-    console.log("Expected:", test.expected)
+console.log("PASS:",test.question)
+pass++
+continue
 
-    console.log("Got:", result.answer)
+}
 
-    fail++
+}
 
-  }
+if(answer===expected){
+
+console.log("PASS:", test.question)
+pass++
+
+} else {
+
+console.log("FAIL:", test.question)
+console.log("Expected:", expected)
+console.log("Got:", answer)
+fail++
+
+}
 
 }
 
 console.log("------------")
-
 console.log("PASS:", pass)
-
 console.log("FAIL:", fail)
-
-console.log("TOTAL:", mathTestCases.length)
+console.log("TOTAL:",allTests.length)

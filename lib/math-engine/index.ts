@@ -1,13 +1,8 @@
 import { normalizeText } from "./core/normalizeText"
-import { extractNumbers } from "./core/numberExtractor"
-import { extractKeywords } from "./core/keywordExtractor"
+import { numberExtractor } from "./core/numberExtractor"
 import { detectProblemType } from "./core/problemDetector"
 
-import { ParsedQuestion } from "./types/ParsedQuestion"
-import { SolveResult } from "./types/SolveResult"
-
 import { arithmeticSolver } from "./solvers/arithmeticSolver"
-import { geometrySolver } from "./solvers/geometrySolver"
 import { fractionSolver } from "./solvers/fractionSolver"
 import { percentSolver } from "./solvers/percentSolver"
 import { ratioSolver } from "./solvers/ratioSolver"
@@ -15,50 +10,51 @@ import { sumDifferenceSolver } from "./solvers/sumDifferenceSolver"
 import { motionSolver } from "./solvers/motionSolver"
 import { workSolver } from "./solvers/workSolver"
 import { ageSolver } from "./solvers/ageSolver"
+import { geometrySolver } from "./solvers/geometrySolver"
 
-export function solveMath(question: string): SolveResult {
+export function solveMath(question:string){
 
-  const normalized = normalizeText(question)
+const normalized=normalizeText(question)
 
-  const numbers = extractNumbers(normalized)
+const numbers=numberExtractor(normalized)
 
-  const keywords = extractKeywords(normalized)
+const parsed={
+raw:question,
+normalized,
+numbers
+}
 
-  const parsed: ParsedQuestion = {
+const type=detectProblemType(parsed)
 
-    raw: question,
+switch(type){
 
-    normalized,
+case "fraction":
+return fractionSolver(parsed)
 
-    numbers,
+case "percent":
+return percentSolver(parsed)
 
-    keywords,
+case "ratio":
+return ratioSolver(parsed)
 
-    units: []
+case "sumDifference":
+return sumDifferenceSolver(parsed)
 
-  }
+case "motion":
+return motionSolver(parsed)
 
-  const type = detectProblemType(parsed)
+case "work":
+return workSolver(parsed)
 
-  parsed.detectedType = type
+case "age":
+return ageSolver(parsed)
 
-  switch (type) {
+case "geometry":
+return geometrySolver(parsed)
 
-    case "geometry":
-      return geometrySolver(parsed)
+default:
+return arithmeticSolver(parsed)
 
-    case "arithmetic":
-      return arithmeticSolver(parsed)
-
-    default:
-      return {
-
-        answer: "Không nhận dạng được bài toán",
-
-        steps: []
-
-      }
-
-  }
+}
 
 }

@@ -1,11 +1,12 @@
-export function normalizeText(input: string): string {
+export function normalizeText(text:string){
 
-  let text = input.toLowerCase()
-
-  text = text.replace(/[.,?!]/g, " ")
-
-  text = text.replace(/\s+/g, " ")
-
-  return text.trim()
+return text
+.toLowerCase()
+.replace(/,/g,".")
+.replace(/×/g,"*")
+.replace(/÷/g,"/")
+.replace(/:/g,"/")
+.replace(/\s+/g," ")
+.trim()
 
 }

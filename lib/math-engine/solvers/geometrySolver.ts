@@ -1,73 +1,49 @@
 import { ParsedQuestion } from "../types/ParsedQuestion"
 import { SolveResult } from "../types/SolveResult"
 
-export function geometrySolver(parsed: ParsedQuestion): SolveResult {
+export function geometrySolver(parsed:ParsedQuestion):SolveResult{
 
-  const text = parsed.normalized
-  const nums = parsed.numbers
+const text=parsed.normalized
+const nums=parsed.numbers
 
-  if (text.includes("chu vi") && text.includes("hình chữ nhật")) {
+if(text.includes("hình chữ nhật")){
 
-    if (text.includes("gấp đôi")) {
+const a=nums[0]
+const b=nums[1]
 
-      const p = nums[0]
+if(text.includes("chu vi")){
 
-      const width = p / 6
-      const length = width * 2
+const p=2*(a+b)
 
-      return {
+return{
+answer:p,
+steps:[
+`P = 2(a+b)`,
+`= ${p}`
+]
+}
 
-        answer: `dài ${length}, rộng ${width}`,
+}
 
-        steps: [
-          "Giả sử rộng = x",
-          "dài = 2x",
-          "chu vi = 2(2x + x) = 6x",
-          `6x = ${p}`,
-          `x = ${width}`
-        ]
+if(text.includes("diện tích")){
 
-      }
+const s=a*b
 
-    }
+return{
+answer:s,
+steps:[
+`S = a*b`,
+`= ${s}`
+]
+}
 
-    if (nums.length >= 2) {
+}
 
-      const l = nums[0]
-      const w = nums[1]
+}
 
-      if (text.includes("chu vi")) {
-
-        const result = 2 * (l + w)
-
-        return {
-          answer: result,
-          steps: [`P = 2(${l}+${w}) = ${result}`]
-        }
-
-      }
-
-      if (text.includes("diện tích")) {
-
-        const s = l * w
-
-        return {
-          answer: s,
-          steps: [`S = ${l} × ${w} = ${s}`]
-        }
-
-      }
-
-    }
-
-  }
-
-  return {
-
-    answer: "Không giải được bài hình học",
-
-    steps: []
-
-  }
+return{
+answer:"",
+steps:["Không giải được"]
+}
 
 }

@@ -3,51 +3,114 @@ import { SolveResult } from "../types/SolveResult"
 
 export function ratioSolver(parsed: ParsedQuestion): SolveResult {
 
-  const text = parsed.normalized
+const nums = parsed.numbers
+const text = parsed.normalized
 
-  const ratioMatch = text.match(/(\d+)\s*:\s*(\d+)/)
+if(nums.length < 3){
+return{
+answer:"",
+steps:["Không đủ dữ kiện"]
+}
+}
 
-  if (!ratioMatch) {
+/*
+Tìm 2 số nhỏ nhất làm tỉ lệ
+số lớn nhất làm tổng / hiệu
+*/
 
-    return {
-      answer: "Không tìm thấy tỉ lệ",
-      steps: []
-    }
+// tìm 2 số nhỏ làm tỉ lệ (không đảo thứ tự)
+let ratioNums = nums.filter(n => n < Math.max(...nums))
 
-  }
+if(ratioNums.length < 2){
+return{
+answer:"",
+steps:["Không tìm được tỉ lệ"]
+}
+}
 
-  const r1 = Number(ratioMatch[1])
-  const r2 = Number(ratioMatch[2])
+const a = ratioNums[0]
+const b = ratioNums[1]
 
-  const totalMatch = text.match(/tổng\s*(\d+)/)
+const main = Math.max(...nums)
 
-  if (!totalMatch) {
+/* ----------------
+TỔNG + TỈ LỆ
+---------------- */
 
-    return {
-      answer: "Không tìm thấy tổng",
-      steps: []
-    }
+if(text.includes("tổng")){
 
-  }
+const ratioSum=a+b
+const unit=main/ratioSum
 
-  const total = Number(totalMatch[1])
+const x=unit*a
+const y=unit*b
 
-  const sum = r1 + r2
+return{
+answer:`${x} và ${y}`,
+steps:[
+`Tổng tỉ lệ ${a}+${b}=${ratioSum}`,
+`1 phần=${main}/${ratioSum}=${unit}`,
+`Số thứ nhất=${x}`,
+`Số thứ hai=${y}`
+]
+}
 
-  const a = total * r1 / sum
-  const b = total * r2 / sum
+}
 
-  return {
+/* ----------------
+HIỆU + TỈ LỆ
+---------------- */
 
-    answer: `${a} và ${b}`,
+if(text.includes("hiệu")){
 
-    steps: [
-      `tỉ lệ = ${r1}:${r2}`,
-      `tổng tỉ = ${sum}`,
-      `số 1 = ${a}`,
-      `số 2 = ${b}`
-    ]
+const ratioDiff = Math.abs(a - b)
+const unit = main / ratioDiff
 
-  }
+const big = Math.max(a,b)
+const small = Math.min(a,b)
+
+const x = unit * small
+const y = unit * big
+
+return{
+answer:`${x} và ${y}`,
+steps:[
+`Hiệu tỉ lệ ${a}-${b}=${ratioDiff}`,
+`1 phần=${main}/${ratioDiff}=${unit}`,
+`Số thứ nhất=${x}`,
+`Số thứ hai=${y}`
+]
+}
+
+}
+
+/* ----------------
+CHIA THEO TỈ LỆ
+---------------- */
+
+if(text.includes("chia")){
+
+const ratioSum=a+b
+const unit=main/ratioSum
+
+const x=unit*a
+const y=unit*b
+
+return{
+answer:`${x} và ${y}`,
+steps:[
+`Tổng tỉ lệ ${a}+${b}=${ratioSum}`,
+`1 phần=${main}/${ratioSum}=${unit}`,
+`Phần thứ nhất=${x}`,
+`Phần thứ hai=${y}`
+]
+}
+
+}
+
+return{
+answer:"",
+steps:["Không nhận dạng được dạng tỉ lệ"]
+}
 
 }
